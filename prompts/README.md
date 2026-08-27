@@ -1,29 +1,35 @@
 # Prompts
 
-Prompts for driving an AI agent that builds slide decks.
+[`presentation-agent.md`](presentation-agent.md) — a prompt for an AI agent that builds
+slide decks from source material.
 
-| File | What it is |
+Four parts, use what you need:
+
+| Part | What it is |
 |---|---|
-| [`presentation-agent.md`](presentation-agent.md) | The reusable prompt. **Part A** is the agent's system prompt; **Part B** is the per-deck brief template. |
-| [`examples/food-waste-azure-deck.md`](examples/food-waste-azure-deck.md) | A filled-in brief for the Azure food waste project in `P5.pdf`, with the source content embedded so nothing else needs to be attached. |
+| **A** | The agent prompt. Paste as a system prompt or agent definition. |
+| **B** | The brief template — audience, purpose, length, format, source material. |
+| **C** | A filled-in brief showing what a good one looks like. |
+| **D** | A compact single-paste version for a plain chat box. |
 
 ## How to use
 
-1. Paste **Part A** of `presentation-agent.md` as the system prompt (or drop it in as a
-   custom instruction / agent definition).
-2. Copy the **Part B** template, fill in audience, purpose, length, format, and paste your
-   source material under `SOURCE MATERIAL:`.
-3. Send it. With `ONE-PASS: no` the agent stops after the outline so you can redirect
-   before it spends effort on slides; with `ONE-PASS: yes` it builds straight through.
+1. Paste **Part A** as the system prompt.
+2. Copy **Part B**, fill it in, paste your source material under `SOURCE MATERIAL:`.
+3. Send it. `ONE-PASS: no` stops the agent after the outline so you can redirect before it
+   spends effort on slides. `ONE-PASS: yes` builds straight through to a file.
 
-For a working example, `examples/food-waste-azure-deck.md` is paste-and-go.
+No system prompt slot? Use **Part D** on its own.
 
-## What the prompt enforces
+## What it enforces
 
-- A stated core message, and every slide serving it.
+- A stated core message, with every slide serving it.
 - Assertion titles — skimming the titles reproduces the argument.
-- Hard limits on slide density (5 bullets / 10 words / ~40 words per slide).
-- Speaker notes on every slide.
-- No invented numbers. Missing figures come back as `[NEEDS DATA: ...]` rather than
-  plausible-looking fabrications.
+- Density limits (5 bullets / 10 words / ~40 words per slide), relaxed automatically for
+  read-alone decks that have no presenter to explain them.
+- Speaker notes on every slide, written as the spoken track.
+- No invented numbers. Gaps come back as `[NEEDS DATA: ...]` instead of plausible-looking
+  fabrications, and projections stay labeled as projections.
 - A built file, not an outline, when a file was asked for.
+- A kill list of deck anti-patterns: topic titles, agenda slides, "Questions?" closers,
+  tool inventories, padding to hit a slide count.
