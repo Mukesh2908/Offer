@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deckwright</title>
+<style>
+  :root{
+    --bg:#0f1319; --panel:#171d26; --line:#252d3a; --text:#e8ecf2;
+    --muted:#98a2b3; --accent:#4a9eff; --accent-ink:#0b1220; --danger:#ff6b6b;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f7f9; --panel:#fff; --line:#e3e7ee; --text:#161b22;
+           --muted:#5b6472; --accent:#0b62d6; --accent-ink:#fff; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:36px 22px 72px}
+  header{margin-bottom:26px}
+  h1{font-size:23px;margin:0 0 4px;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:14px;margin:0}
+  .grid{display:grid;grid-template-columns:minmax(340px,420px) 1fr;gap:22px;align-items:start}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr} }
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+  label{display:block;font-size:12px;font-weight:600;letter-spacing:.03em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+  textarea,input,select{width:100%;background:transparent;color:var(--text);
+    border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:inherit}
+  textarea{min-height:120px;resize:vertical}
+  textarea:focus,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .field{margin-bottom:14px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  button{background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;
+    padding:11px 18px;font:600 15px inherit;cursor:pointer;width:100%}
+  button:disabled{opacity:.55;cursor:default}
+  .ghost{background:transparent;color:var(--text);border:1px solid var(--line);width:auto;padding:8px 14px;font-size:14px}
+  .status{margin-top:12px;font-size:13.5px;color:var(--muted);min-height:20px}
+  .status.err{color:var(--danger)}
+  .empty{color:var(--muted);font-size:14px;text-align:center;padding:70px 20px}
+  iframe{width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:10px;background:#000}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 0}
+  .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);
+    border-radius:999px;padding:3px 10px}
+  .core{margin:14px 0 0;padding:12px 14px;border-left:3px solid var(--accent);
+    background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:0 8px 8px 0;font-size:14px}
+  h3{font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);margin:20px 0 8px}
+  ul.flags{margin:0;padding-left:18px;font-size:13.5px;color:var(--muted)}
+  ul.flags li{margin-bottom:4px}
+  .outline{margin-top:8px;border-top:1px solid var(--line)}
+  .sl{display:flex;gap:12px;padding:9px 2px;border-bottom:1px solid var(--line);font-size:14px}
+  .sl .n{color:var(--muted);font-variant-numeric:tabular-nums;flex:none;width:22px}
+  .sl .lay{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;
+    flex:none;width:88px;padding-top:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Deckwright</h1>
+    <p class="sub">Describe the talk. Get a deck with a narrative, assertion titles, and speaker notes.</p>
+  </header>
+
+  <div class="grid">
+    <form class="panel" id="form">
+      <div class="field">
+        <label for="prompt">What is the deck about?</label>
+        <textarea id="prompt" required
+          placeholder="Make the case to engineering leadership that we should migrate off the legacy job runner this quarter. Cover the incident history, the migration plan, and what we need approved."></textarea>
+      </div>
+      <div class="field">
+        <label for="audience">Audience</label>
+        <input id="audience" placeholder="Engineering leadership, technical but not in the code">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="purpose">Purpose</label>
+          <select id="purpose">
+            <option value="">Let it choose</option>
+            <option>inform</option><option>persuade</option><option>teach</option>
+            <option>report</option><option>pitch</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="slides">Slides</label>
+          <input id="slides" type="number" min="3" max="25" placeholder="8">
+        </div>
+      </div>
+      <button type="submit" id="go">Generate deck</button>
+      <div class="status" id="status"></div>
+    </form>
+
+    <div class="panel" id="out">
+      <div class="empty" id="empty">Your deck preview appears here.</div>
+      <div id="result" hidden>
+        <iframe id="frame" title="Deck preview"></iframe>
+        <div class="meta">
+          <button class="ghost" id="dl">Download .pptx</button>
+          <button class="ghost" id="open">Open preview</button>
+          <span class="pill" id="pillSlides"></span>
+          <span class="pill" id="pillPalette"></span>
+          <span class="pill" id="pillModel"></span>
+        </div>
+        <div class="core" id="core"></div>
+        <div id="flags"></div>
+        <h3>Outline</h3>
+        <div class="outline" id="outline"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let current = null;
+
+$('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const prompt = $('prompt').value.trim();
+  if (!prompt) return;
+
+  $('go').disabled = true;
+  $('status').className = 'status';
+  $('status').textContent = 'Writing the deck… this usually takes 30-60 seconds.';
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt,
+        audience: $('audience').value.trim() || undefined,
+        purpose: $('purpose').value || undefined,
+        slideCount: $('slides').value || undefined,
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Generation failed.');
+    render(data);
+    $('status').textContent = data.demo ? 'Demo deck (no API call made).' : 'Done.';
+  } catch (err) {
+    $('status').className = 'status err';
+    $('status').textContent = err.message;
+  } finally {
+    $('go').disabled = false;
+  }
+});
+
+function render(data) {
+  current = data;
+  const d = data.deck;
+  $('empty').hidden = true;
+  $('result').hidden = false;
+  $('frame').src = data.preview_url;
+  $('pillSlides').textContent = d.slides.length + ' slides';
+  $('pillPalette').textContent = String(d.palette).replace(/_/g, ' ');
+  $('pillModel').textContent = data.usage ? data.usage.model : 'demo fixture';
+  $('core').textContent = d.core_message;
+
+  const parts = [];
+  if (d.needs_data && d.needs_data.length) {
+    parts.push('<h3>Needs data — supply before presenting</h3><ul class="flags">' +
+      d.needs_data.map(t => '<li>' + escapeHtml(t) + '</li>').join('') + '</ul>');
+  }
+  if (d.assumptions && d.assumptions.length) {
+    parts.push('<h3>Assumptions made</h3><ul class="flags">' +
+      d.assumptions.map(t => '<li>' + escapeHtml(t) + '</li>').join('') + '</ul>');
+  }
+  $('flags').innerHTML = parts.join('');
+
+  $('outline').innerHTML = d.slides.map((s, i) =>
+    '<div class="sl"><span class="n">' + (i + 1) + '</span>' +
+    '<span class="lay">' + escapeHtml(s.layout) + '</span>' +
+    '<span>' + escapeHtml(s.title) + '</span></div>').join('');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+}
+
+$('dl').addEventListener('click', () => { if (current) location.href = current.pptx_url; });
+$('open').addEventListener('click', () => { if (current) window.open(current.preview_url, '_blank'); });
+</script>
+</body>
+</html>
