@@ -1,131 +1,162 @@
 <title>Waypoint Roadmaps</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
-/* Layout: a vertical spine of topic blocks with subtopics branching left and right on a pannable dotted canvas; toolbar on top. */
+/* Layout: a transit map. Topics are stations on a coloured trunk line; subtopics are stops on 45° branch lines. Toolbar, journey strip, then the map. */
 :root{
-  --bg:#F2F4F8; --canvas:#F7F8FB; --dot:#D5DBE6; --surface:#FFFFFF; --sunk:#E8ECF3; --ink:#141A29; --muted:#5A6378; --line:#D8DEE8;
-  --accent:#2B55E6; --accent-ink:#FFFFFF; --accent-soft:#E3E9FD; --wire:#9AA6BD;
-  --ok:#1E8A55; --ok-soft:#DDF3E7; --danger:#C0322B; --danger-soft:#FBE3E1;
-  --core:#F5C518; --core-soft:#FFF6D1; --good:#2B55E6; --optional:#9AA3B5;
-  --c1:#4F46E5; --c2:#0E8C7E; --c3:#D2461A; --c4:#B8327A; --c5:#7A4FD6; --c6:#2F7ABF;
-  --shadow:0 1px 2px rgba(20,26,41,.07),0 3px 10px rgba(20,26,41,.06);
+  --bg:#EEF0F3; --paper:#F8F8F5; --grid:#E4E6E9; --surface:#FFFFFF; --sunk:#E6E9EE; --ink:#16181D; --muted:#5C6270; --line:#D4D8DF;
+  --accent:#E8402A; --accent-ink:#FFFFFF; --accent-soft:#FCE3DE;
+  --ok:#128A4F; --ok-soft:#DCF2E5; --danger:#C0322B; --danger-soft:#FBE3E1; --gold:#E9B10E; --gold-soft:#FFF4CF;
+  --c1:#E8402A; --c2:#0A8F7A; --c3:#2F5BD8; --c4:#C2307E; --c5:#E08A00; --c6:#7A48D0; --c7:#4A8B1E; --c8:#0E86B8;
+  --shadow:0 1px 2px rgba(22,24,29,.08),0 4px 12px rgba(22,24,29,.06);
   --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
   --f-body:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0D111A; --canvas:#10151F; --dot:#232C3D; --surface:#171D2A; --sunk:#1D2433; --ink:#E7EBF3; --muted:#98A1B6; --line:#2A3346;
-  --accent:#7D9BFF; --accent-ink:#0D111A; --accent-soft:#1E2945; --wire:#4A5670;
-  --ok:#4CC98A; --ok-soft:#15301F; --danger:#FF7A72; --danger-soft:#3A1917;
-  --core:#F5C518; --core-soft:#3A3212; --good:#7D9BFF; --optional:#6C758A;
-  --c1:#8B85FF; --c2:#3CC7B5; --c3:#FF875A; --c4:#F06BB0; --c5:#A98BFF; --c6:#62A8EA;
-  --shadow:0 1px 2px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.3); color-scheme:dark}}
+  --bg:#0C0E12; --paper:#12151B; --grid:#1A1E26; --surface:#191D25; --sunk:#20252F; --ink:#ECEEF2; --muted:#9AA1AF; --line:#2B313D;
+  --accent:#FF6A52; --accent-ink:#0C0E12; --accent-soft:#3A1B16;
+  --ok:#43C987; --ok-soft:#133022; --danger:#FF7A72; --danger-soft:#3A1917; --gold:#F2C230; --gold-soft:#352C0E;
+  --c1:#FF6A52; --c2:#2FC3AA; --c3:#6D8FFF; --c4:#F063AE; --c5:#FFA928; --c6:#A884FF; --c7:#7CC44A; --c8:#3FB6E6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0D111A; --canvas:#10151F; --dot:#232C3D; --surface:#171D2A; --sunk:#1D2433; --ink:#E7EBF3; --muted:#98A1B6; --line:#2A3346;
-  --accent:#7D9BFF; --accent-ink:#0D111A; --accent-soft:#1E2945; --wire:#4A5670;
-  --ok:#4CC98A; --ok-soft:#15301F; --danger:#FF7A72; --danger-soft:#3A1917;
-  --core:#F5C518; --core-soft:#3A3212; --good:#7D9BFF; --optional:#6C758A;
-  --c1:#8B85FF; --c2:#3CC7B5; --c3:#FF875A; --c4:#F06BB0; --c5:#A98BFF; --c6:#62A8EA;
-  --shadow:0 1px 2px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.3); color-scheme:dark}
+  --bg:#0C0E12; --paper:#12151B; --grid:#1A1E26; --surface:#191D25; --sunk:#20252F; --ink:#ECEEF2; --muted:#9AA1AF; --line:#2B313D;
+  --accent:#FF6A52; --accent-ink:#0C0E12; --accent-soft:#3A1B16;
+  --ok:#43C987; --ok-soft:#133022; --danger:#FF7A72; --danger-soft:#3A1917; --gold:#F2C230; --gold-soft:#352C0E;
+  --c1:#FF6A52; --c2:#2FC3AA; --c3:#6D8FFF; --c4:#F063AE; --c5:#FFA928; --c6:#A884FF; --c7:#7CC44A; --c8:#3FB6E6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 4px 12px rgba(0,0,0,.3); color-scheme:dark}
 
 *{box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);display:flex;flex-direction:column;overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
+button:disabled{cursor:default;opacity:.55}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.12}
 
-.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg);flex:none}
-.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:700;font-size:18px;margin-right:auto}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--bg);flex:none}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--f-display);font-weight:800;font-size:19px;letter-spacing:-.01em;margin-right:auto}
 .pick{display:flex;align-items:center;gap:4px;min-width:0}
 select,input,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
-select{max-width:210px}
-.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;font-weight:500;font-size:14px;white-space:nowrap}
-.btn:hover{border-color:var(--muted)}
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+select{max-width:220px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;font-weight:500;font-size:14px;white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.accent{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
 .btn.ghost:hover{color:var(--ink);background:var(--sunk)}
 .btn.danger{color:var(--danger);border-color:var(--danger-soft);background:var(--danger-soft)}
 .btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.spark{font-family:var(--f-mono);font-size:12px;font-weight:600}
 .seg{display:inline-flex;background:var(--sunk);border-radius:9px;padding:3px;gap:2px}
 .seg button{border:0;background:transparent;padding:5px 12px;border-radius:7px;font-size:14px;font-weight:500;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 
-.sub{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:14px 16px 12px;border-bottom:1px solid var(--line);flex:none}
-.sub h1{font-size:clamp(22px,3.2vw,30px);font-weight:700}
-.sub .desc{color:var(--muted);font-size:14px;margin-top:2px;max-width:70ch}
-.sub .grow{flex:1 1 320px;min-width:0}
-.prog{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
-.prog .track{width:140px;height:7px;border-radius:99px;background:var(--sunk);overflow:hidden}
-.prog .track i{display:block;height:100%;background:var(--ok);border-radius:inherit;transition:width .3s}
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
-.legend span{display:inline-flex;align-items:center;gap:6px}
-.sw{width:14px;height:10px;border-radius:3px;border:2px solid var(--line);background:var(--surface)}
-.sw.core{border-color:var(--core);background:var(--core-soft)}
-.sw.good{border-color:var(--good)}
-.sw.optional{border-style:dashed;border-color:var(--optional)}
-.sw.done{border-color:var(--ok);background:var(--ok-soft)}
+/* journey strip */
+.strip{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border-bottom:1px solid var(--line);flex:none}
+.strip>div{background:var(--bg);padding:12px 16px;min-width:0}
+.strip h1{font-size:clamp(20px,2.6vw,26px);font-weight:800;letter-spacing:-.015em;overflow-wrap:anywhere}
+.strip .desc{color:var(--muted);font-size:13.5px;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.k{font-family:var(--f-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.v{font-family:var(--f-display);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums;line-height:1.2;margin-top:2px}
+.v small{font-family:var(--f-body);font-weight:400;font-size:13px;color:var(--muted)}
+.track{height:6px;border-radius:99px;background:var(--sunk);overflow:hidden;margin-top:6px}
+.track i{display:block;height:100%;background:var(--ok);border-radius:inherit;transition:width .4s}
+.nextbtn{all:unset;cursor:pointer;display:block;min-width:0}
+.nextbtn .v{font-size:16px;display:flex;align-items:center;gap:6px}
+.nextbtn .v span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nextbtn:hover .v span{text-decoration:underline;text-underline-offset:3px}
+.nextbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.status{display:inline-block;font-family:var(--f-mono);font-size:11px;font-weight:600;border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:2px}
+.status.on{background:var(--ok-soft);color:var(--ok)}
+.status.behind{background:var(--danger-soft);color:var(--danger)}
+.linkish{all:unset;cursor:pointer;color:var(--accent);font-size:13px;font-weight:500}
+.linkish:hover{text-decoration:underline}
 .note{margin:10px 16px 0;padding:9px 12px;border-radius:8px;background:var(--sunk);font-size:13.5px;flex:none}
 
 /* canvas */
-.viewport{position:relative;flex:1;min-height:0;overflow:hidden;background-color:var(--canvas);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.3px);background-size:22px 22px;touch-action:none;cursor:grab}
+.viewport{position:relative;flex:1;min-height:0;overflow:hidden;background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;touch-action:none;cursor:grab}
 .viewport.panning{cursor:grabbing}
 .stage{position:absolute;left:0;top:0;transform-origin:0 0}
+.stage.fly{transition:transform .55s cubic-bezier(.3,.7,.2,1)}
 .stage svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
-.wire{fill:none;stroke:var(--wire);stroke-width:2}
-.wire.spine{stroke-width:3;stroke-dasharray:2 7;stroke-linecap:round}
-.wire.done{stroke:var(--ok)}
-.node{position:absolute;transform:translate(-50%,-50%);border-radius:10px;background:var(--surface);border:2px solid var(--line);box-shadow:var(--shadow);padding:8px 12px;text-align:center;font-size:14px;font-weight:500;line-height:1.3;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:center;gap:6px}
-.node:hover{filter:brightness(.98);box-shadow:0 0 0 3px var(--accent-soft),var(--shadow)}
-.node .t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
-.sec{background:var(--c);border-color:var(--c);color:#fff;font-family:var(--f-display);font-weight:700;font-size:17px;padding:12px 16px}
-.sec .n{font-family:var(--f-mono);font-weight:500;font-size:11.5px;opacity:.85;background:rgba(255,255,255,.18);border-radius:99px;padding:1px 7px}
-.kid.core{border-color:var(--core);background:var(--core-soft)}
-.kid.good{border-color:var(--good)}
-.kid.optional{border-style:dashed;border-color:var(--optional);color:var(--muted)}
-.kid.done{border-color:var(--ok);background:var(--ok-soft);color:var(--ink)}
-.kid .ck{flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--wire);display:inline-grid;place-items:center;font-size:10px;line-height:1}
-.kid.done .ck{background:var(--ok);border-color:var(--ok);color:var(--surface)}
-.kid .lk{flex:none;font-size:11px;color:var(--muted);font-family:var(--f-mono)}
-.addnode{border-style:dashed;background:transparent;box-shadow:none;color:var(--muted);font-size:13px}
-.title-node{background:var(--ink);color:var(--bg);border-color:var(--ink);font-family:var(--f-display);font-weight:700;font-size:20px;padding:12px 20px;border-radius:12px}
-
+.trunk{fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+.branch{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.branch.optional{stroke-dasharray:1 9;stroke-width:5}
+.branch.todo{opacity:.35}
+.node{position:absolute;transform:translate(-50%,-50%);user-select:none}
+.station{display:flex;align-items:center;gap:10px;background:var(--surface);border:3px solid var(--ink);border-radius:12px;padding:8px 14px 8px 8px;box-shadow:var(--shadow);cursor:pointer;font-family:var(--f-display);font-weight:700;font-size:16.5px;line-height:1.2}
+.station .num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-family:var(--f-mono);font-size:13px;font-weight:600}
+.station .t{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.station .cnt{flex:none;font-family:var(--f-mono);font-weight:500;font-size:11.5px;color:var(--muted)}
+.station.complete{border-color:var(--ok)}
+.station.complete .num{background:var(--ok)}
+.station:hover{box-shadow:0 0 0 4px var(--sunk),var(--shadow)}
+.stop{display:flex;align-items:center;min-height:38px;padding:6px 12px;border-radius:8px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;font-size:14px;font-weight:500;line-height:1.28}
+.stop .t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;flex:1;min-width:0}
+.stop.r{padding-left:18px}.stop.l{padding-right:18px;text-align:right}
+.stop .dot{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--paper);border:4px solid var(--c);transform:translateY(-50%)}
+.stop.r .dot{left:-10px}.stop.l .dot{right:-10px}
+.stop.core .dot{box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--c)}
+.stop.optional{color:var(--muted);background:transparent;box-shadow:none;border-style:dashed}
+.stop.done{background:var(--ok-soft);border-color:transparent}
+.stop.done .dot{background:var(--c)}
+.stop .meta{flex:none;font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-inline:8px 0}
+.stop.l .meta{order:-1;margin-inline:0 8px}
+.stop:hover{border-color:var(--muted)}
+.here::after{content:"You are here";position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--accent-ink);font-family:var(--f-mono);font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.here .dot{animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--accent)}70%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.terminus{background:var(--ink);color:var(--bg);border-radius:10px;padding:10px 18px;text-align:center;box-shadow:var(--shadow)}
+.terminus .k{color:inherit;opacity:.7}
+.terminus b{display:block;font-family:var(--f-display);font-size:19px;font-weight:800;line-height:1.2}
+.terminus.end{background:var(--surface);color:var(--ink);border:3px solid var(--ink)}
+.terminus.end.won{border-color:var(--ok);background:var(--ok-soft)}
+.addnode{border:2px dashed var(--line);background:var(--surface);color:var(--muted);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:500}
+.addnode:hover{color:var(--ink);border-color:var(--muted)}
 .zoom{position:absolute;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;z-index:2}
 .zoom button{width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);font-size:17px;font-weight:600}
-.hint{position:absolute;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:5px 9px;z-index:2}
+.key{position:absolute;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px;z-index:2;display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);box-shadow:var(--shadow)}
+.key .k{margin-bottom:2px}
+.key span{display:flex;align-items:center;gap:8px}
+.key i{width:14px;height:14px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);flex:none}
+.key i.core{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--ink)}
+.key i.opt{border-style:dotted}
+.key i.done{background:var(--ink)}
 
 /* list view */
-.list{flex:1;min-height:0;overflow-y:auto;padding:18px 16px 60px}
-.list .inner{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-.lsec h2{font-size:19px;display:flex;align-items:center;gap:10px}
-.lsec h2::before{content:"";width:12px;height:12px;border-radius:4px;background:var(--c)}
+.list{flex:1;min-height:0;overflow-y:auto;padding:18px 16px 60px;background:var(--paper)}
+.list .inner{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.lsec{border-left:6px solid var(--c);padding-left:14px}
+.lsec h2{font-size:19px;display:flex;align-items:baseline;gap:10px}
 .lsec h2 small{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-weight:400}
 .lsec ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
 .lrow{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:8px 12px}
 .lrow input{width:18px;height:18px;accent-color:var(--ok);flex:none}
 .lrow .tt{flex:1;min-width:0;overflow-wrap:anywhere;cursor:pointer}
 .lrow.done .tt{text-decoration:line-through;color:var(--muted)}
-.tag{font-size:11.5px;font-family:var(--f-mono);border-radius:99px;padding:1px 8px;white-space:nowrap}
-.tag.core{background:var(--core-soft);color:var(--ink);border:1px solid var(--core)}
-.tag.optional{color:var(--muted);border:1px dashed var(--optional)}
+.tag{font-size:11.5px;font-family:var(--f-mono);border-radius:99px;padding:1px 8px;white-space:nowrap;border:1px solid var(--line);color:var(--muted)}
+.tag.core{background:var(--gold-soft);color:var(--ink);border-color:var(--gold)}
+.tag.optional{border-style:dashed}
 
-.empty{flex:1;display:grid;place-items:center;padding:40px 16px;text-align:center}
-.empty div{max-width:520px}
-.empty h1{font-size:32px;margin-bottom:10px}
+.empty{flex:1;display:grid;place-items:center;padding:40px 16px;text-align:center;background:var(--paper)}
+.empty>div{max-width:560px}
+.empty h1{font-size:clamp(28px,5vw,40px);font-weight:800;margin-bottom:10px;letter-spacing:-.02em}
 .empty p{color:var(--muted);margin:0 0 20px}
 .empty .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
 /* dialogs */
-.ov{position:fixed;inset:0;z-index:20;background:rgba(10,14,22,.45);display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow-y:auto}
-.panel{background:var(--surface);border-radius:14px;width:100%;max-width:540px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);border:1px solid var(--line)}
-.panel h2{font-size:22px}
+.ov{position:fixed;inset:0;z-index:20;background:rgba(8,10,14,.5);display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow-y:auto}
+.panel{background:var(--surface);border-radius:14px;width:100%;max-width:560px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.3);border:1px solid var(--line)}
+.panel h2{font-size:23px;font-weight:800;letter-spacing:-.01em}
 .panel .lead{margin:0;color:var(--muted);font-size:14px;white-space:pre-wrap}
+.panel .bandtop{height:8px;border-radius:99px;background:var(--c,var(--ink));margin-bottom:-4px}
 .field{display:flex;flex-direction:column;gap:5px}
 .field label,.field .lbl{font-size:13px;font-weight:600;color:var(--muted)}
-.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
 textarea{resize:vertical;min-height:80px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-top:4px}
 .actions .sp{flex:1}
@@ -136,23 +167,57 @@ textarea{resize:vertical;min-height:80px}
 .colors{display:flex;gap:8px;flex-wrap:wrap}
 .colors label{position:relative}
 .colors input{position:absolute;opacity:0;inset:0}
-.colors span{display:block;width:28px;height:28px;border-radius:8px;background:var(--c);border:3px solid transparent}
-.colors input:checked+span{border-color:var(--ink)}
-.colors input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.colors span{display:block;width:28px;height:28px;border-radius:50%;background:var(--c);border:3px solid var(--surface);box-shadow:0 0 0 2px transparent}
+.colors input:checked+span{box-shadow:0 0 0 2px var(--ink)}
+.colors input:focus-visible+span{outline:2px solid var(--accent);outline-offset:3px}
+.explain{background:var(--sunk);border-radius:10px;padding:12px 14px;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow-y:auto}
+.explain.wait{color:var(--muted);font-style:italic}
 .share-step{display:flex;flex-direction:column;gap:6px}
 .share-step h3{font-family:var(--f-body);font-size:14px;font-weight:600}
 .share-step p{margin:0;color:var(--muted);font-size:14px}
 .copyrow{display:flex;gap:8px}
 .copyrow input{flex:1;font-family:var(--f-mono);font-size:13px}
 .mono{font-family:var(--f-mono);font-size:12.5px;min-height:170px;width:100%}
+.laying{display:flex;align-items:center;gap:12px;background:var(--sunk);border-radius:10px;padding:12px 14px;font-size:14px}
+.laying .rail{flex:1;height:8px;border-radius:99px;background:repeating-linear-gradient(90deg,var(--ink) 0 14px,transparent 14px 22px);background-size:22px 8px;animation:rail .6s linear infinite;opacity:.6}
+@keyframes rail{to{background-position:22px 0}}
+
+/* journey dialog */
+.jgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.jgrid>div{background:var(--sunk);border-radius:10px;padding:10px 12px}
+.heat{display:grid;grid-template-rows:repeat(7,12px);grid-auto-flow:column;grid-auto-columns:12px;gap:3px;overflow-x:auto;padding-bottom:4px}
+.heat i{border-radius:3px;background:var(--sunk)}
+.heat i.l1{background:color-mix(in srgb,var(--ok) 35%,var(--sunk))}
+.heat i.l2{background:color-mix(in srgb,var(--ok) 65%,var(--sunk))}
+.heat i.l3{background:var(--ok)}
+.heat i.today{outline:1.5px solid var(--ink);outline-offset:1px}
+.riders{display:flex;flex-direction:column;gap:8px}
+.rider{display:grid;grid-template-columns:28px minmax(0,1fr) 110px 42px;gap:10px;align-items:center;font-size:14px}
+.rider img{width:28px;height:28px;border-radius:50%;background:var(--sunk)}
+.rider .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rider .pc{font-family:var(--f-mono);font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.rider .track{margin:0}
+.switch{display:flex;align-items:center;gap:10px;font-size:14px}
+.switch input{width:18px;height:18px;accent-color:var(--ok)}
+.upnext{display:flex;flex-direction:column;gap:6px}
+.upnext button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:var(--sunk);font-size:14px}
+.upnext button:hover{outline:1px solid var(--muted)}
+.upnext button:focus-visible{outline:2px solid var(--accent)}
+.upnext i{width:12px;height:12px;border-radius:50%;border:3px solid var(--c);flex:none}
+.upnext span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.upnext.menu span{white-space:normal}
+.upnext.menu button{padding:12px 14px}
+.upnext small{font-family:var(--f-mono);color:var(--muted);font-size:11.5px}
+
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:9px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
-@media (max-width:640px){.legend{display:none}.hint{display:none}.prog .track{width:90px}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:820px){.strip{grid-template-columns:repeat(2,minmax(0,1fr))}.strip>div:first-child{grid-column:1/-1}.key{display:none}}
+@media (max-width:520px){.strip>div.pace{display:none}.jgrid{grid-template-columns:1fr 1fr}.rider{grid-template-columns:28px minmax(0,1fr) 42px}.rider .track{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
 <header class="bar">
   <div class="brand">
-    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2v18" stroke="var(--wire)" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round"/><path d="M11 7 C15 7 15 5 19 5 M11 15 C7 15 7 17 3 17" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/><circle cx="11" cy="7" r="3" fill="var(--c3)"/><circle cx="11" cy="15" r="3" fill="var(--c1)"/></svg>
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M4 21 L10 15 L10 5" fill="none" stroke="var(--c1)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 15 L22 15" fill="none" stroke="var(--c3)" stroke-width="3.2" stroke-linecap="round"/><circle cx="10" cy="15" r="3.6" fill="var(--paper)" stroke="var(--ink)" stroke-width="2"/><circle cx="22" cy="15" r="2.6" fill="var(--c3)"/><circle cx="10" cy="5" r="2.6" fill="var(--c1)"/></svg>
     Waypoint
   </div>
   <div class="pick" id="pick"></div>
@@ -160,30 +225,36 @@ textarea{resize:vertical;min-height:80px}
     <button id="v-map" data-act="view" data-v="map">Map</button>
     <button id="v-list" data-act="view" data-v="list">Checklist</button>
   </div>
+  <button class="btn" data-act="journey" id="journeyBtn" hidden>Journey</button>
   <button class="btn" data-act="edit" id="editBtn" hidden>Edit</button>
   <button class="btn primary" data-act="share">Share</button>
 </header>
-<div id="subhead"></div>
+<div id="strip"></div>
 <div id="notice"></div>
 <div id="main" style="flex:1;min-height:0;display:flex;flex-direction:column"></div>
 <div id="overlay"></div>
 <div id="toast" class="toast" hidden></div>
 
 <script>
-const COLORS=['c1','c2','c3','c4','c5','c6'];
+const COLORS=['c1','c2','c3','c4','c5','c6','c7','c8'];
 const LEVELS={core:'Must know',good:'Good to know',optional:'Optional'};
-const S={mode:'loading',maps:[],current:null,view:'map',editing:false,canWrite:true,uid:null,db:null,downloads:null,
-  ready:false,done:{},modal:null,cam:null};
+const DAY=864e5;
+const S={mode:'loading',maps:[],current:null,view:'map',editing:false,canWrite:true,uid:null,db:null,user:null,downloads:null,sample:null,
+  ready:false,prog:{done:{},goal:{},log:{},share:false},cohort:[],people:{},modal:null,cam:null,explained:{}};
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const newId=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 const safeUrl=u=>/^https?:\/\//i.test((u||'').trim())?u.trim():'';
+const clone=o=>JSON.parse(JSON.stringify(o));
+const dayKey=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const hoursOf=k=>(+k.hours>0?+k.hours:(k.level==='core'?3:k.level==='optional'?1:2));
+const fmtH=h=>(Math.round(h*10)/10)+'h';
 
 /* ---------- outline import / export ---------- */
-// Format: "# Title", then one line per topic, indented "- " lines for subtopics.
-// Subtopic suffixes: "!" = must know, "?" = optional; "| https://…" adds a link.
+// One line per station (topic); indented "- " lines are its stops.
+// Stop suffixes: "!" must know, "?" optional, "~3h" time, "| https://…" link.
 function parseOutline(text){
   const lines=text.split(/\r?\n/);let name='',summary='';const sections=[];let cur=null;
   for(const raw of lines){
@@ -195,50 +266,53 @@ function parseOutline(text){
     let t=raw.trim().replace(/^[-*+]\s+/,'').replace(/^\[[ xX]\]\s*/,'').replace(/^#+\s*/,'').replace(/^\d+[.)]\s+/,'');
     if(!indented){cur={id:newId('s'),title:t,color:COLORS[sections.length%COLORS.length],children:[]};sections.push(cur);continue}
     let url='';const pi=t.indexOf('|');if(pi>=0){url=safeUrl(t.slice(pi+1));t=t.slice(0,pi).trim()}
+    let hours=0;const hm=/~\s*(\d+(?:\.\d+)?)\s*h\s*$/i.exec(t);if(hm){hours=+hm[1];t=t.slice(0,hm.index).trim()}
     let level='good';if(/!\s*$/.test(t)){level='core';t=t.replace(/!\s*$/,'').trim()}else if(/\?\s*$/.test(t)){level='optional';t=t.replace(/\?\s*$/,'').trim()}
-    cur.children.push({id:newId('k'),title:t,level,note:'',links:url?[{label:'',url}]:[]});
+    if(!hours){const hm2=/~\s*(\d+(?:\.\d+)?)\s*h\s*$/i.exec(t);if(hm2){hours=+hm2[1];t=t.slice(0,hm2.index).trim()}}
+    cur.children.push({id:newId('k'),title:t,level,hours,note:'',links:url?[{label:'',url}]:[]});
   }
   return{name:name||'Untitled roadmap',summary,sections};
 }
 function toOutline(m){
   const out=['# '+m.name];if(m.summary)out.push('> '+m.summary);
   m.sections.forEach(s=>{out.push('',s.title);s.children.forEach(k=>{
-    const suf=k.level==='core'?' !':k.level==='optional'?' ?':'';const u=(k.links&&k.links[0]&&k.links[0].url)?' | '+k.links[0].url:'';
-    out.push('  - '+k.title+suf+u)})});
+    const suf=k.level==='core'?' !':k.level==='optional'?' ?':'';const h=+k.hours>0?' ~'+k.hours+'h':'';
+    const u=(k.links&&k.links[0]&&k.links[0].url)?' | '+k.links[0].url:'';
+    out.push('  - '+k.title+suf+h+u)})});
   return out.join('\n');
 }
 function toMarkdown(m){
   const d=doneSet(m.id);const out=['# '+m.name];if(m.summary)out.push('',m.summary);
-  m.sections.forEach((s,i)=>{out.push('',`## ${i+1}. ${s.title}`);s.children.forEach(k=>{
+  m.sections.forEach((s,i)=>{out.push('',`## Station ${i+1}: ${s.title}`);s.children.forEach(k=>{
     const tag=k.level==='core'?' **(must know)**':k.level==='optional'?' _(optional)_':'';
     const links=(k.links||[]).filter(l=>safeUrl(l.url)).map(l=>`[${l.label||'link'}](${l.url})`).join(', ');
-    out.push(`- [${d.has(k.id)?'x':' '}] ${k.title}${tag}${links?' — '+links:''}`)})});
+    out.push(`- [${d.has(k.id)?'x':' '}] ${k.title}${tag} · ~${fmtH(hoursOf(k))}${links?' — '+links:''}`)})});
   return out.join('\n');
 }
 
 const SAMPLE=`# Example: Learn Git
-> Example roadmap. Edit it, or start your own from the menu.
+> Example roadmap. Edit it, or plan your own route from the menu.
 Basics
-  - What version control is !
-  - Install and configure Git !
-  - init, add, commit !
-  - Reading git log
+  - What version control is ! ~1h
+  - Install and configure Git ! ~1h
+  - init, add, commit ! ~2h
+  - Reading git log ~1h
 Branching
-  - Create and switch branches !
-  - Merging !
-  - Resolving conflicts !
-  - Rebasing ?
+  - Create and switch branches ! ~1h
+  - Merging ! ~2h
+  - Resolving conflicts ! ~2h
+  - Rebasing ? ~2h
 Remotes
-  - Clone, push, pull !
-  - Pull requests
-  - Forks ?`;
+  - Clone, push, pull ! ~2h
+  - Pull requests ~2h
+  - Forks ? ~1h`;
 
 /* ---------- storage ---------- */
-function saveLocal(){ls('waypoint-maps',JSON.stringify({maps:S.maps,done:S.done}))}
+function saveLocal(){ls('waypoint-maps',JSON.stringify({maps:S.maps,prog:S.prog}))}
 function startLocal(){
   S.mode='local';let d=null;try{d=JSON.parse(ls('waypoint-maps')||'null')}catch(e){}
-  if(!d||!Array.isArray(d.maps)){const m=parseOutline(SAMPLE);d={maps:[{id:'mexample',createdAt:Date.now(),...m}],done:{}}}
-  S.maps=d.maps;S.done=d.done||{};S.ready=true;pickCurrent();render();
+  if(!d||!Array.isArray(d.maps)){const m=parseOutline(SAMPLE);d={maps:[{id:'mexample',createdAt:Date.now(),...m}]}}
+  S.maps=d.maps;if(d.prog)S.prog=Object.assign(S.prog,d.prog);S.ready=true;pickCurrent();render();
 }
 function onWriteErr(e){
   const c=e&&e.code;
@@ -250,7 +324,7 @@ function onWriteErr(e){
 async function saveMap(m){
   m.updatedAt=Date.now();
   const i=S.maps.findIndex(x=>x.id===m.id);if(i<0)S.maps.push(m);else S.maps[i]=m;
-  if(S.mode==='db'){render();const{id,...body}=m;try{await S.db.collection('maps').doc(id).set(JSON.parse(JSON.stringify(body)))}catch(e){onWriteErr(e)}}
+  if(S.mode==='db'){render();const{id,...body}=m;try{await S.db.collection('maps').doc(id).set(clone(body))}catch(e){onWriteErr(e)}}
   else{saveLocal();render()}
 }
 async function deleteMap(id){
@@ -258,31 +332,59 @@ async function deleteMap(id){
   if(S.mode==='db'){try{await S.db.collection('maps').doc(id).delete()}catch(e){onWriteErr(e)}}else saveLocal();
   S.current=null;pickCurrent();render();
 }
-function doneSet(mapId){return new Set(S.done[mapId]||[])}
-async function toggleDone(kidId){
-  const m=cur();if(!m)return;const set=doneSet(m.id);set.has(kidId)?set.delete(kidId):set.add(kidId);
-  S.done[m.id]=[...set];render();
-  if(S.mode==='db'){
-    if(!S.uid){toast('Sign in to save your progress.');return}
-    try{await S.db.collection('data/users/'+S.uid).doc('progress').set({done:S.done})}catch(e){toast('Your progress did not save. Try again.')}
-  }else saveLocal();
+let progT=null,progBusy=false,progAgain=false;
+function saveProgress(){
+  if(S.mode!=='db'){saveLocal();return}
+  if(!S.uid){toast('Sign in to save your progress.');return}
+  clearTimeout(progT);progT=setTimeout(flushProgress,700);
+}
+async function flushProgress(){
+  if(progBusy){progAgain=true;return}progBusy=true;
+  try{
+    await S.db.doc('data/users/'+S.uid+'/progress').set(clone(S.prog));
+    if(S.prog.share)await S.db.doc('cohort/'+S.uid).set({maps:cohortSummary(),at:Date.now()});
+  }catch(e){toast('Your progress did not save. Try again.')}
+  progBusy=false;if(progAgain){progAgain=false;flushProgress()}
+}
+function cohortSummary(){const o={};S.maps.forEach(m=>{const st=stats(m);if(st.done>0)o[m.id]={done:st.done,total:st.total}});return o}
+async function setShare(on){
+  S.prog.share=on;
+  if(S.mode==='db'&&S.uid){
+    try{if(on)await S.db.doc('cohort/'+S.uid).set({maps:cohortSummary(),at:Date.now()});else await S.db.doc('cohort/'+S.uid).delete()}
+    catch(e){S.prog.share=!on;toast(on?'Could not join the riders list. You may need Contributor access.':'Could not leave the riders list. Try again.')}
+  }
+  saveProgress();renderModal(true);
+}
+function doneSet(mapId){return new Set(S.prog.done[mapId]||[])}
+function toggleDone(kidId,force){
+  const m=cur();if(!m)return;const set=doneSet(m.id);const had=set.has(kidId);
+  const want=force===undefined?!had:force;if(want===had)return;
+  want?set.add(kidId):set.delete(kidId);S.prog.done[m.id]=[...set];
+  if(want){const t=dayKey(Date.now());S.prog.log[t]=(S.prog.log[t]||0)+1}
+  render();saveProgress();
 }
 
 async function boot(){
   render();
   const c=window.claude;
   const db=c&&c.use?await c.use('db').catch(()=>null):null;
+  c&&c.use&&c.use('sample').then(s=>{S.sample=s;render()}).catch(()=>{});
   if(!db){startLocal();return}
   S.mode='db';S.db=db;
-  const user=await c.use('user').catch(()=>null);
+  const user=await c.use('user').catch(()=>null);S.user=user;
   if(user){try{S.uid=await user.id()}catch(e){}try{if(await user.can('data.write')===false)S.canWrite=false}catch(e){}}
   c.use('downloads').then(d=>{S.downloads=d}).catch(()=>{});
   db.collection('maps').onSnapshot(s=>{S.maps=s.docs.map(d=>({id:d.id,...d.data()}));S.ready=true;pickCurrent();render()},
     e=>{S.ready=true;if(e&&(e.code==='revoked'||e.code==='not_granted'))S.canWrite=false;render()});
-  if(S.uid)db.doc('data/users/'+S.uid+'/progress').get().then(snap=>{if(snap.exists){S.done=(snap.data().done)||{};render()}}).catch(()=>{});
+  db.collection('cohort').onSnapshot(s=>{S.cohort=s.docs.map(d=>({id:d.id,...d.data()}));resolvePeople();if(S.modal&&S.modal.type==='journey')renderModal(true)},()=>{});
+  if(S.uid)db.doc('data/users/'+S.uid+'/progress').get().then(snap=>{if(snap.exists){const d=snap.data();S.prog=Object.assign({done:{},goal:{},log:{},share:false},clone(d));render()}}).catch(()=>{});
+}
+async function resolvePeople(){
+  if(!S.user||!S.user.profiles)return;const ids=S.cohort.map(c=>c.id).filter(id=>!S.people[id]);if(!ids.length)return;
+  try{const ps=await S.user.profiles(ids);Object.assign(S.people,ps);if(S.modal&&S.modal.type==='journey')renderModal(true)}catch(e){}
 }
 
-/* ---------- selection ---------- */
+/* ---------- selection & stats ---------- */
 const sortedMaps=()=>S.maps.slice().sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
 const cur=()=>S.maps.find(m=>m.id===S.current);
 function pickCurrent(){
@@ -294,107 +396,199 @@ function pickCurrent(){
 }
 function setCurrent(id){S.current=id;S.cam=null;ls('waypoint-current',id);try{history.replaceState(null,'','#'+id)}catch(e){location.hash=id}render()}
 window.addEventListener('hashchange',()=>{pickCurrent();render()});
+function stats(m){
+  const d=doneSet(m.id);let total=0,done=0,hLeft=0,hAll=0;
+  m.sections.forEach(s=>s.children.forEach(k=>{total++;const h=hoursOf(k);hAll+=h;if(d.has(k.id))done++;else if(k.level!=='optional')hLeft+=h}));
+  return{total,done,hLeft,hAll,pct:total?Math.round(done/total*100):0};
+}
+function upNext(m,n){
+  const d=doneSet(m.id);const out=[];
+  for(const pass of['main','optional'])for(const s of m.sections)for(const k of s.children){
+    if(d.has(k.id))continue;if((pass==='main')===(k.level==='optional'))continue;out.push({k,s});if(out.length>=n)return out}
+  return out;
+}
+function streak(){
+  const log=S.prog.log||{};let n=0;let t=Date.now();
+  if(!log[dayKey(t)])t-=DAY;
+  while(log[dayKey(t)]){n++;t-=DAY}
+  return n;
+}
+function pace(m){
+  const g=(S.prog.goal||{})[m.id];const st=stats(m);if(!g)return null;
+  const end=new Date(g+'T23:59:59');const days=Math.max(0,Math.ceil((end-Date.now())/DAY));
+  const per=days>0?st.hLeft/days:Infinity;
+  const week=[...Array(7)].reduce((a,_,i)=>a+((S.prog.log||{})[dayKey(Date.now()-i*DAY)]||0),0);
+  return{g,days,per,left:st.hLeft,behind:st.hLeft>0&&(days===0||per>4),week};
+}
+const fmtDate=g=>new Date(g+'T12:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});
 
-/* ---------- layout ---------- */
-const G={secW:230,kidW:210,row:58,gap:84,secGap:56,top:130};
+/* ---------- layout (transit geometry) ---------- */
+const G={secW:250,kidW:220,row:60,gap:96,secGap:64,top:150};
 function layout(m){
-  const X0=G.secW/2+G.gap+G.kidW/2;const W=2*(X0+G.kidW/2)+80;const cx=W/2;
-  const nodes=[],wires=[];let y=G.top;
-  nodes.push({type:'title',x:cx,y:50,w:Math.min(W-40,520),label:m.name});
-  let prevY=50;
+  const X0=G.secW/2+G.gap+G.kidW/2;const W=2*(X0+G.kidW/2)+100;const cx=W/2;
+  const nodes=[],trunks=[],branches=[];let y=G.top;
+  nodes.push({type:'start',x:cx,y:56});
+  let prevY=80;
   m.sections.forEach((s,si)=>{
     const kids=s.children.slice();if(S.editing)kids.push({add:true,id:'add-'+s.id});
     const R=kids.filter((_,i)=>i%2===0),L=kids.filter((_,i)=>i%2===1);
     const n=Math.max(1,R.length,L.length);const h=n*G.row;const sy=y+h/2;
-    wires.push({spine:true,d:`M${cx} ${prevY} L${cx} ${sy}`});prevY=sy;
-    nodes.push({type:'sec',x:cx,y:sy,w:G.secW,s,si});
+    trunks.push({c:s.color||'c1',d:`M${cx} ${prevY} L${cx} ${sy}`});prevY=sy;
+    nodes.push({type:'station',x:cx,y:sy,w:G.secW,s,si});
     [[R,1],[L,-1]].forEach(([arr,dir])=>arr.forEach((k,j)=>{
       const ky=sy-(arr.length*G.row)/2+j*G.row+G.row/2;const kx=cx+dir*X0;
-      const x1=cx+dir*G.secW/2,x2=kx-dir*G.kidW/2,mx=(x1+x2)/2;
-      wires.push({d:`M${x1} ${sy} C${mx} ${sy} ${mx} ${ky} ${x2} ${ky}`,kid:k.id});
-      nodes.push({type:k.add?'add':'kid',x:kx,y:ky,w:G.kidW,k,s});
+      const x1=cx+dir*G.secW/2,x2=kx-dir*G.kidW/2;const xa=x1+dir*16;const dy=Math.abs(ky-sy);
+      const run=Math.min(dy,Math.abs(x2-xa)-16);const xb=xa+dir*Math.max(run,0);
+      if(!k.add)branches.push({c:s.color||'c1',k,d:`M${x1} ${sy} L${xa} ${sy} L${xb} ${ky} L${x2} ${ky}`});
+      nodes.push({type:k.add?'add':'stop',x:kx,y:ky,w:G.kidW,k,s,dir});
     }));
     y+=h+G.secGap;
   });
-  if(S.editing){const ay=y+10;wires.push({spine:true,d:`M${cx} ${prevY} L${cx} ${ay}`});nodes.push({type:'addsec',x:cx,y:ay,w:G.secW});y=ay+40}
-  return{nodes,wires,W,H:y+60};
+  if(S.editing){const ay=y;trunks.push({c:'c1',d:`M${cx} ${prevY} L${cx} ${ay}`,ghost:true});nodes.push({type:'addsec',x:cx,y:ay,w:G.secW});prevY=ay;y=ay+40}
+  if(m.sections.length){const ey=y+10;trunks.push({c:(m.sections[m.sections.length-1].color)||'c1',d:`M${cx} ${prevY} L${cx} ${ey}`});nodes.push({type:'end',x:cx,y:ey+30});y=ey+60}
+  return{nodes,trunks,branches,W,H:y+80,cx};
 }
 
 /* ---------- render ---------- */
 function render(){
   $('#v-map').setAttribute('aria-pressed',S.view==='map');
   $('#v-list').setAttribute('aria-pressed',S.view==='list');
-  const eb=$('#editBtn');eb.hidden=!(S.canWrite&&cur());eb.setAttribute('aria-pressed',S.editing);eb.textContent=S.editing?'Done editing':'Edit';
+  const m=cur();
+  const eb=$('#editBtn');eb.hidden=!(S.canWrite&&m);eb.setAttribute('aria-pressed',S.editing);eb.textContent=S.editing?'Done editing':'Edit';
+  const jb=$('#journeyBtn');jb.hidden=!m;const sk=streak();jb.innerHTML=sk?`Journey <span class="spark">${sk}d streak</span>`:'Journey';
 
   const ms=sortedMaps();
-  $('#pick').innerHTML=ms.length?`<select id="rm" aria-label="Roadmap">${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===S.current?'selected':''}>${esc(m.name)}</option>`).join('')}</select>
-    ${S.canWrite?`<button class="btn ghost" data-act="new-map">+ New</button>`:''}`:'';
+  $('#pick').innerHTML=ms.length?`<select id="rm" aria-label="Roadmap">${ms.map(x=>`<option value="${esc(x.id)}" ${x.id===S.current?'selected':''}>${esc(x.name)}</option>`).join('')}</select>
+    ${S.canWrite?`<button class="btn ghost" data-act="new-menu">+ New</button>`:''}`:'';
 
   const notes=[];
-  if(S.mode==='local')notes.push('<b>Saved in this browser only.</b> Open this page on claude.ai while signed in to share roadmaps.');
-  if(S.mode==='db'&&!S.canWrite)notes.push('<b>View only.</b> You can tick off topics to track your own progress. Ask the owner for Contributor access to edit.');
+  if(S.mode==='local')notes.push('<b>Saved in this browser only.</b> Open this page on claude.ai while signed in to share roadmaps and use AI route planning.');
+  if(S.mode==='db'&&!S.canWrite)notes.push('<b>View only.</b> You can still ride the line: tick off stops to track your own progress.');
   $('#notice').innerHTML=notes.map(n=>`<div class="note">${n}</div>`).join('');
 
-  const main=$('#main');const m=cur();
-  if(!S.ready){$('#subhead').innerHTML='';main.innerHTML=`<div class="empty"><div><h1>Opening your roadmaps…</h1></div></div>`;return}
+  const main=$('#main');
+  if(!S.ready){$('#strip').innerHTML='';main.innerHTML=`<div class="empty"><div><h1>Opening your lines…</h1></div></div>`;return}
   if(!m){
-    $('#subhead').innerHTML='';
-    main.innerHTML=`<div class="empty"><div><h1>Map out what to learn, step by step.</h1>
-      <p>Build a visual roadmap of topics and subtopics, mark what matters most, attach resources, and share it. Everyone who opens it can tick off their own progress.</p>
-      ${S.canWrite?`<div class="row"><button class="btn primary" data-act="new-map">Create a roadmap</button><button class="btn" data-act="import">Paste an outline</button></div>`:'<p>No roadmaps have been shared here yet.</p>'}</div></div>`;
-    return;
+    $('#strip').innerHTML='';
+    main.innerHTML=`<div class="empty"><div><div class="k" style="margin-bottom:10px">Waypoint</div><h1>Every skill is a line. Every topic, a station.</h1>
+      <p>Plan a learning route as a transit map, ride it stop by stop, and see how far you've come. Share it so others can ride along.</p>
+      ${S.canWrite?`<div class="row">${S.sample?`<button class="btn accent" data-act="ai">Plan a route with Claude</button>`:''}<button class="btn primary" data-act="new-map">Draw one yourself</button><button class="btn" data-act="import">Paste an outline</button></div>`:'<p>No lines have been shared here yet.</p>'}</div></div>`;
+    renderModal();return;
   }
-  const d=doneSet(m.id);const total=m.sections.reduce((a,s)=>a+s.children.length,0);
-  const got=m.sections.reduce((a,s)=>a+s.children.filter(k=>d.has(k.id)).length,0);const pct=total?Math.round(got/total*100):0;
-  $('#subhead').innerHTML=`<div class="sub"><div class="grow"><h1>${esc(m.name)}</h1>${m.summary?`<div class="desc">${esc(m.summary)}</div>`:''}</div>
-    <div class="prog" title="Your progress"><div class="track"><i style="width:${pct}%"></i></div>${got}/${total} done · ${pct}%</div>
-    <div class="legend"><span><i class="sw core"></i>Must know</span><span><i class="sw good"></i>Good to know</span><span><i class="sw optional"></i>Optional</span><span><i class="sw done"></i>Done</span></div>
-    ${S.editing?`<button class="btn" data-act="edit-map">Rename or delete</button>`:''}</div>`;
+  const st=stats(m);const nx=upNext(m,1)[0];const p=pace(m);
+  $('#strip').innerHTML=`<div class="strip">
+    <div><h1>${esc(m.name)}</h1>${m.summary?`<div class="desc">${esc(m.summary)}</div>`:''}${S.editing?`<button class="linkish" data-act="edit-map">Rename or delete this line</button>`:''}</div>
+    <div><div class="k">Your progress</div><div class="v">${st.pct}% <small>${st.done} of ${st.total} stops</small></div><div class="track"><i style="width:${st.pct}%"></i></div></div>
+    <div>${nx?`<button class="nextbtn" data-act="goto" data-id="${esc(nx.k.id)}"><div class="k">Next stop</div><div class="v"><span>${esc(nx.k.title)}</span>→</div></button>`:`<div class="k">Next stop</div><div class="v">Line complete</div>`}</div>
+    <div class="pace"><div class="k">Pace</div>${p?`<div class="v">${p.left?(p.days?fmtH(p.per)+'<small>/day</small>':'<small>Due today</small>'):'Done'}${p.left?`<span class="status ${p.behind?'behind':'on'}">${p.behind?'Tight':'On track'}</span>`:''}</div><button class="linkish" data-act="journey">${fmtH(p.left)} left · by ${esc(fmtDate(p.g))}</button>`
+      :`<div class="v">${fmtH(st.hLeft)} <small>left</small></div><button class="linkish" data-act="journey">Set a finish date</button>`}</div>
+  </div>`;
 
   if(S.view==='list'){
+    const d=doneSet(m.id);
     main.innerHTML=`<div class="list"><div class="inner">${m.sections.map((s,i)=>`<section class="lsec" style="--c:var(--${s.color||'c1'})">
       <h2>${i+1}. ${esc(s.title)} <small>${s.children.filter(k=>d.has(k.id)).length}/${s.children.length}</small></h2>
       <ul>${s.children.map(k=>`<li class="lrow ${d.has(k.id)?'done':''}"><input type="checkbox" id="ck-${esc(k.id)}" data-done="${esc(k.id)}" ${d.has(k.id)?'checked':''} aria-label="Done: ${esc(k.title)}">
-        <span class="tt" data-open="${esc(k.id)}">${esc(k.title)}</span>${k.level!=='good'?`<span class="tag ${k.level}">${LEVELS[k.level]}</span>`:''}${(k.links||[]).length?`<span class="tag">${k.links.length} link${k.links.length>1?'s':''}</span>`:''}</li>`).join('')||'<li class="lrow"><span class="tt" style="color:var(--muted)">No subtopics yet</span></li>'}</ul></section>`).join('')}</div></div>`;
+        <span class="tt" data-open="${esc(k.id)}">${esc(k.title)}</span>${k.level!=='good'?`<span class="tag ${k.level}">${LEVELS[k.level]}</span>`:''}<span class="tag">~${fmtH(hoursOf(k))}</span></li>`).join('')||'<li class="lrow"><span class="tt" style="color:var(--muted)">No stops yet</span></li>'}</ul></section>`).join('')}</div></div>`;
     renderModal();return;
   }
 
-  const L=layout(m);
+  const L=layout(m);const d=doneSet(m.id);const hereId=nx&&nx.k.id;
   main.innerHTML=`<div class="viewport" id="vp"><div class="stage" id="stage" style="width:${L.W}px;height:${L.H}px">
-    <svg width="${L.W}" height="${L.H}" aria-hidden="true">${L.wires.map(w=>`<path class="wire ${w.spine?'spine':''} ${w.kid&&d.has(w.kid)?'done':''}" d="${w.d}"/>`).join('')}</svg>
-    ${L.nodes.map(n=>nodeHTML(n,d)).join('')}</div>
-    <div class="zoom"><button data-act="zin" aria-label="Zoom in">+</button><button data-act="zout" aria-label="Zoom out">−</button><button data-act="fit" aria-label="Fit to screen">⤢</button></div>
-    <div class="hint">Drag to move · Ctrl + scroll to zoom · Click a topic for details</div></div>`;
+    <svg width="${L.W}" height="${L.H}" aria-hidden="true">
+      ${L.branches.map(b=>`<path class="branch ${b.k.level==='optional'?'optional':''} ${d.has(b.k.id)?'':'todo'}" stroke="var(--${b.c})" d="${b.d}"/>`).join('')}
+      ${L.trunks.map(t=>`<path class="trunk" stroke="var(--${t.c})" ${t.ghost?'stroke-dasharray="2 14" opacity=".5"':''} d="${t.d}"/>`).join('')}
+    </svg>
+    ${L.nodes.map(n=>nodeHTML(n,d,m,st,hereId)).join('')}</div>
+    <div class="key" aria-hidden="true"><div class="k">Map key</div><span><i class="core"></i>Must know</span><span><i></i>Good to know</span><span><i class="opt"></i>Optional</span><span><i class="done"></i>Done</span></div>
+    <div class="zoom"><button data-act="zin" aria-label="Zoom in">+</button><button data-act="zout" aria-label="Zoom out">−</button><button data-act="fit" aria-label="Fit to screen">⤢</button></div></div>`;
   S.layout=L;applyCam();renderModal();
 }
-function nodeHTML(n,d){
-  const st=`left:${n.x}px;top:${n.y}px;width:${n.w}px`;
-  if(n.type==='title')return `<div class="node title-node" style="left:${n.x}px;top:${n.y}px;max-width:${n.w}px"><span class="t">${esc(n.label)}</span></div>`;
-  if(n.type==='sec')return `<div class="node sec" role="button" tabindex="0" data-sec="${esc(n.s.id)}" style="${st};--c:var(--${n.s.color||'c1'})"><span class="t">${esc(n.s.title)}</span><span class="n">${n.s.children.filter(k=>d.has(k.id)).length}/${n.s.children.length}</span></div>`;
-  if(n.type==='add')return `<button class="node addnode" data-act="new-kid" data-s="${esc(n.s.id)}" style="${st}">+ Add subtopic</button>`;
-  if(n.type==='addsec')return `<button class="node addnode" data-act="new-sec" style="${st}">+ Add topic</button>`;
+function nodeHTML(n,d,m,st,hereId){
+  const pos=`left:${n.x}px;top:${n.y}px`;
+  if(n.type==='start')return `<div class="node terminus" style="${pos};max-width:560px"><div class="k">Departing</div><b>${esc(m.name)}</b></div>`;
+  if(n.type==='end')return `<div class="node terminus end ${st.done===st.total&&st.total?'won':''}" style="${pos}"><div class="k">Destination</div><b>${st.done===st.total&&st.total?'You made it':`${st.total-st.done} stops to go`}</b></div>`;
+  if(n.type==='station'){const s=n.s;const dn=s.children.filter(k=>d.has(k.id)).length;const complete=s.children.length&&dn===s.children.length;
+    return `<div class="node station ${complete?'complete':''}" role="button" tabindex="0" data-sec="${esc(s.id)}" style="${pos};width:${n.w}px;--c:var(--${s.color||'c1'})"><span class="num">${complete?'✓':n.si+1}</span><span class="t">${esc(s.title)}</span><span class="cnt">${dn}/${s.children.length}</span></div>`}
+  if(n.type==='add')return `<button class="node addnode" data-act="new-kid" data-s="${esc(n.s.id)}" style="${pos};width:${n.w}px">+ Add stop</button>`;
+  if(n.type==='addsec')return `<button class="node addnode" data-act="new-sec" style="${pos};width:${n.w}px">+ Add station</button>`;
   const k=n.k,dn=d.has(k.id);
-  return `<div class="node kid ${k.level||'good'} ${dn?'done':''}" role="button" tabindex="0" data-open="${esc(k.id)}" style="${st}" title="${esc(k.title)}"><span class="ck">${dn?'✓':''}</span><span class="t">${esc(k.title)}</span>${(k.links||[]).length?`<span class="lk">↗${k.links.length}</span>`:''}</div>`;
+  return `<div class="node stop ${n.dir>0?'r':'l'} ${k.level||'good'} ${dn?'done':''} ${k.id===hereId&&!S.editing?'here':''}" role="button" tabindex="0" data-open="${esc(k.id)}" style="${pos};width:${n.w}px;--c:var(--${n.s.color||'c1'})" title="${esc(k.title)}"><i class="dot"></i><span class="t">${esc(k.title)}</span><span class="meta">${dn?'done':'~'+fmtH(hoursOf(k))}</span></div>`;
 }
 
-/* ---------- pan & zoom ---------- */
+/* ---------- pan, zoom, fly ---------- */
 function fitCam(){const vp=$('#vp');if(!vp||!S.layout)return;const vw=vp.clientWidth;const k=Math.min(1,Math.max(.3,(vw-24)/S.layout.W));S.cam={k,x:(vw-S.layout.W*k)/2,y:12}}
-function applyCam(){const st=$('#stage');if(!st)return;if(!S.cam)fitCam();st.style.transform=`translate(${S.cam.x}px,${S.cam.y}px) scale(${S.cam.k})`}
-function zoomAt(f,px,py){const c=S.cam;const k=Math.min(2,Math.max(.25,c.k*f));c.x=px-(px-c.x)*(k/c.k);c.y=py-(py-c.y)*(k/c.k);c.k=k;applyCam()}
+function applyCam(){const st=$('#stage');if(!st)return;if(!S.cam)fitCam();if(S.cam)st.style.transform=`translate(${S.cam.x}px,${S.cam.y}px) scale(${S.cam.k})`}
+function zoomAt(f,px,py){const c=S.cam;if(!c)return;const k=Math.min(2,Math.max(.25,c.k*f));c.x=px-(px-c.x)*(k/c.k);c.y=py-(py-c.y)*(k/c.k);c.k=k;applyCam()}
+function flyTo(kidId){
+  if(S.view!=='map'){S.view='map';render()}
+  const vp=$('#vp'),st=$('#stage');if(!vp||!S.layout)return;const n=S.layout.nodes.find(x=>x.k&&x.k.id===kidId);if(!n)return;
+  const k=Math.max(S.cam?S.cam.k:1,.85);S.cam={k,x:vp.clientWidth/2-n.x*k,y:vp.clientHeight/2-n.y*k};
+  st.classList.add('fly');applyCam();setTimeout(()=>{const s2=$('#stage');if(s2)s2.classList.remove('fly')},600);
+}
 let pan=null;
-document.addEventListener('pointerdown',e=>{const vp=e.target.closest&&e.target.closest('#vp');if(!vp||e.target.closest('.node,.zoom'))return;
+document.addEventListener('pointerdown',e=>{const vp=e.target.closest&&e.target.closest('#vp');if(!vp||!S.cam||e.target.closest('.node,.zoom'))return;
   pan={x:e.clientX,y:e.clientY,cx:S.cam.x,cy:S.cam.y,id:e.pointerId};vp.classList.add('panning');try{vp.setPointerCapture(e.pointerId)}catch(err){}});
 document.addEventListener('pointermove',e=>{if(!pan||e.pointerId!==pan.id)return;S.cam.x=pan.cx+e.clientX-pan.x;S.cam.y=pan.cy+e.clientY-pan.y;applyCam()});
-document.addEventListener('pointerup',e=>{if(!pan)return;pan=null;const vp=$('#vp');if(vp)vp.classList.remove('panning')});
+document.addEventListener('pointerup',()=>{if(!pan)return;pan=null;const vp=$('#vp');if(vp)vp.classList.remove('panning')});
 document.addEventListener('wheel',e=>{const vp=e.target.closest&&e.target.closest('#vp');if(!vp||!S.cam)return;e.preventDefault();
   const r=vp.getBoundingClientRect();
   if(e.ctrlKey||e.metaKey)zoomAt(Math.exp(-e.deltaY*.01),e.clientX-r.left,e.clientY-r.top);
   else{S.cam.x-=e.deltaX;S.cam.y-=e.deltaY;applyCam()}},{passive:false});
 window.addEventListener('resize',()=>{if(S.view==='map'){S.cam=null;applyCam()}});
 
+/* ---------- Claude features ---------- */
+let aiCtl=null;
+async function generateRoute(v){
+  const prompt=`You design learning roadmaps drawn as transit maps. Each "station" is a topic studied in order; each station has "stops" (subtopics).
+Goal: ${v.goal}
+Current level: ${v.level}
+Time available: about ${v.hours} hours per week for ${v.weeks} weeks.
+
+Reply with JSON only, no prose, in this exact shape:
+{"name": "short roadmap name (max 6 words)", "summary": "one sentence on who it is for and the outcome",
+ "sections": [{"title": "station name (max 5 words)", "children": [{"title": "stop name (max 8 words)", "level": "core" | "good" | "optional", "hours": number, "note": "one or two sentences: what to learn and a concrete practice task"}]}]}
+Rules: 5 to 9 stations in the order a learner should take them; 3 to 7 stops each; mark the essentials "core", nice-to-haves "good", and stretch material "optional". Make total core+good hours fit roughly ${v.hours*v.weeks} hours. Use real, specific topic names.`;
+  aiCtl=new AbortController();
+  const out=await S.sample.json(prompt,{signal:aiCtl.signal,modelTier:'default',onText:({text})=>{
+    const n=(text.match(/"children"/g)||[]).length;const el=$('#layMsg');if(el)el.textContent=n?`Laying track… ${n} station${n>1?'s':''} placed`:'Surveying the route…'}});
+  aiCtl=null;
+  if(!out||!Array.isArray(out.sections)||!out.sections.length)throw{code:'empty_completion'};
+  const sections=out.sections.slice(0,12).map((s,i)=>({id:newId('s'),title:String(s.title||'Station '+(i+1)).slice(0,80),color:COLORS[i%COLORS.length],
+    children:(Array.isArray(s.children)?s.children:[]).slice(0,10).map(k=>({id:newId('k'),title:String(k.title||'Stop').slice(0,120),
+      level:['core','good','optional'].includes(k.level)?k.level:'good',hours:Math.min(200,Math.max(0,+k.hours||0)),note:String(k.note||'').slice(0,2000),links:[]}))}));
+  return{id:newId('m'),createdAt:Date.now(),name:String(out.name||v.goal).slice(0,80),summary:String(out.summary||'').slice(0,400),sections};
+}
+function aiErrMsg(e){
+  const c=e&&e.code;
+  if(c==='not_granted'||c==='sampling_disabled'||c==='not_declared'||c==='capability_disabled'||c==='capability_removed'){S.sample=null;return'Claude is not available on this page for your account.'}
+  if(c==='rate_limited')return'You have hit a usage limit. Try again in a little while.';
+  if(c==='refused')return'Claude could not plan that goal. Try describing it differently.';
+  if(c==='invalid_json'||c==='empty_completion')return'The route came back incomplete. Try again.';
+  if(c==='session_expired')return'Sign in again, then try once more.';
+  return'Something went wrong while planning. Try again.';
+}
+async function explain(k,s,m){
+  const box=$('#explainBox');if(!box)return;
+  if(S.explained[k.id]){box.hidden=false;box.textContent=S.explained[k.id];return}
+  box.hidden=false;box.classList.add('wait');box.textContent='Asking Claude…';$('#explainBtn').disabled=true;
+  const prompt=`A learner is following the roadmap "${m.name}". They are at the stop "${k.title}" in the section "${s.title}".${k.note?' Roadmap note: '+k.note:''}
+Explain this topic for them in plain text, no markdown headings or bold:
+1) What it is, in 2-3 sentences.
+2) Why it matters for this roadmap, in 1 sentence.
+3) A 3-step mini exercise they can do in under an hour.
+4) One common mistake to avoid.
+Keep it under 180 words.`;
+  try{
+    const r=await S.sample(prompt,{onText:({text})=>{box.classList.remove('wait');box.textContent=text}});
+    S.explained[k.id]=r.text;box.textContent=r.text;
+  }catch(e){box.classList.remove('wait');box.textContent=(e&&e.text)?e.text+'\n\n(interrupted)':aiErrMsg(e);if(!S.sample){const b=$('#explainBtn');if(b)b.hidden=true}}
+  const b=$('#explainBtn');if(b)b.disabled=false;
+}
+
 /* ---------- dialogs ---------- */
-function openModal(m){S.modal=m;m.key=m.key||Math.random().toString(36);renderModal(true);setTimeout(()=>{const f=$('#overlay [autofocus]');if(f)f.focus()},0)}
-function closeModal(){S.modal=null;renderModal(true)}
+function openModal(md){S.modal=md;md.key=md.key||Math.random().toString(36);renderModal(true);setTimeout(()=>{const f=$('#overlay [autofocus]');if(f)f.focus()},0)}
+function closeModal(){if(aiCtl){aiCtl.abort();aiCtl=null}S.modal=null;renderModal(true)}
 function findKid(m,id){for(const s of m.sections){const k=s.children.find(x=>x.id===id);if(k)return{s,k}}return null}
 function renderModal(force){
   const o=$('#overlay');const md=S.modal;
@@ -403,56 +597,96 @@ function renderModal(force){
   o.dataset.key=md.key;const m=cur();let h='';
   const del=(what,act)=>md.confirm?`<div class="confirm"><span>Delete ${what}? This can’t be undone.</span><button type="button" class="btn danger" data-act="${act}">Delete</button><button type="button" class="btn" data-act="del-no">Keep</button></div>`:'';
   if(md.type==='kid'){
-    const k=md.k;const dn=m&&doneSet(m.id).has(k.id);
+    const k=md.k;const dn=m&&doneSet(m.id).has(k.id);const col=`--c:var(--${md.s.color||'c1'})`;
     if(!S.editing){
       const links=(k.links||[]).filter(l=>safeUrl(l.url));
-      h=`<div class="panel"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="tag ${k.level}">${LEVELS[k.level||'good']}</span><span class="tag">${esc(md.s.title)}</span></div>
+      h=`<div class="panel" style="${col}"><div class="bandtop"></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="tag">${esc(md.s.title)}</span><span class="tag ${k.level}">${LEVELS[k.level||'good']}</span><span class="tag">~${fmtH(hoursOf(k))}</span></div>
         <h2>${esc(k.title)}</h2>${k.note?`<p class="lead">${esc(k.note)}</p>`:''}
         ${links.length?`<div class="field"><span class="lbl">Resources</span><div class="links">${links.map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label||l.url)} ↗</a>`).join('')}</div></div>`:''}
-        <div class="actions"><button class="btn ${dn?'':'primary'}" data-act="toggle" data-id="${esc(k.id)}">${dn?'Mark as not done':'Mark as done'}</button><span class="sp"></span><button class="btn" data-act="close">Close</button></div></div>`;
+        <div id="explainBox" class="explain" hidden></div>
+        <div class="actions"><button class="btn ${dn?'':'accent'}" data-act="toggle" data-id="${esc(k.id)}">${dn?'Mark as not done':'Mark as done'}</button>${S.sample?`<button class="btn" id="explainBtn" data-act="explain">Explain with Claude</button>`:''}<span class="sp"></span><button class="btn" data-act="close">Close</button></div></div>`;
     }else{
       const linkTxt=(k.links||[]).map(l=>(l.label?l.label+' | ':'')+l.url).join('\n');
-      h=`<form class="panel" id="kidForm"><h2>${md.isNew?'New subtopic':'Edit subtopic'}</h2>
+      h=`<form class="panel" id="kidForm" style="${col}"><div class="bandtop"></div><h2>${md.isNew?'New stop':'Edit stop'}</h2>
         <div class="field"><label for="k-title">Title</label><input id="k-title" name="title" required maxlength="120" value="${esc(k.title)}" autofocus></div>
-        <div class="field"><label for="k-level">Importance</label><select id="k-level" name="level">${Object.entries(LEVELS).map(([v,t])=>`<option value="${v}" ${k.level===v?'selected':''}>${t}</option>`).join('')}</select></div>
-        <div class="field"><label for="k-note">Notes</label><textarea id="k-note" name="note" maxlength="2000" placeholder="What to learn here, tips, what to skip">${esc(k.note)}</textarea></div>
+        <div class="frow"><div class="field"><label for="k-level">Importance</label><select id="k-level" name="level">${Object.entries(LEVELS).map(([v,t])=>`<option value="${v}" ${k.level===v?'selected':''}>${t}</option>`).join('')}</select></div>
+          <div class="field"><label for="k-hours">Time to learn (hours)</label><input id="k-hours" name="hours" type="number" min="0" max="200" step="0.5" value="${+k.hours>0?k.hours:''}" placeholder="${hoursOf({level:k.level})}"></div></div>
+        <div class="field"><label for="k-note">Notes</label><textarea id="k-note" name="note" maxlength="2000" placeholder="What to learn here, a practice task, what to skip">${esc(k.note)}</textarea></div>
         <div class="field"><label for="k-links">Resources, one per line</label><textarea id="k-links" name="links" class="mono" style="min-height:80px" placeholder="Video lecture | https://…&#10;https://…">${esc(linkTxt)}</textarea></div>
-        ${del('this subtopic','del-kid-yes')}
+        ${del('this stop','del-kid-yes')}
         <div class="actions">${md.isNew?'':`<button type="button" class="btn ghost" data-act="del-ask" style="color:var(--danger)">Delete</button>`}<span class="sp"></span>
-          <button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">${md.isNew?'Add':'Save'}</button></div></form>`;
+          <button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">${md.isNew?'Add stop':'Save'}</button></div></form>`;
     }
   }else if(md.type==='sec'){
-    const s=md.s;const idx=m.sections.findIndex(x=>x.id===s.id);
+    const s=md.s;const idx=m.sections.findIndex(x=>x.id===s.id);const col=`--c:var(--${s.color||'c1'})`;
     if(!S.editing){
-      const d=doneSet(m.id);
-      h=`<div class="panel"><h2>${esc(s.title)}</h2><p class="lead">${s.children.filter(k=>d.has(k.id)).length} of ${s.children.length} subtopics done.</p>
+      const d=doneSet(m.id);const hrs=s.children.reduce((a,k)=>a+hoursOf(k),0);
+      h=`<div class="panel" style="${col}"><div class="bandtop"></div><div class="k">Station ${idx+1}</div><h2>${esc(s.title)}</h2><p class="lead">${s.children.filter(k=>d.has(k.id)).length} of ${s.children.length} stops done · about ${fmtH(hrs)} in total.</p>
+        <div class="upnext">${s.children.map(k=>`<button data-act="open" data-id="${esc(k.id)}" style="--c:var(--${s.color||'c1'})"><i style="${d.has(k.id)?'background:var(--c)':''}"></i><span>${esc(k.title)}</span><small>${d.has(k.id)?'done':'~'+fmtH(hoursOf(k))}</small></button>`).join('')}</div>
         <div class="actions"><button class="btn" data-act="sec-all" data-id="${esc(s.id)}">Mark all as done</button><span class="sp"></span><button class="btn" data-act="close">Close</button></div></div>`;
     }else{
-      h=`<form class="panel" id="secForm"><h2>${md.isNew?'New topic':'Edit topic'}</h2>
+      h=`<form class="panel" id="secForm" style="${col}"><div class="bandtop"></div><h2>${md.isNew?'New station':'Edit station'}</h2>
         <div class="field"><label for="s-title">Title</label><input id="s-title" name="title" required maxlength="80" value="${esc(s.title)}" autofocus></div>
-        <div class="field"><span class="lbl">Colour</span><div class="colors">${COLORS.map(c=>`<label><input type="radio" name="color" value="${c}" ${s.color===c?'checked':''} aria-label="Colour ${c.slice(1)}"><span style="--c:var(--${c})"></span></label>`).join('')}</div></div>
-        ${!md.isNew?`<div class="field"><span class="lbl">Position</span><div style="display:flex;gap:8px"><button type="button" class="btn" data-act="sec-move" data-dir="-1" ${idx<=0?'disabled':''}>Move up</button><button type="button" class="btn" data-act="sec-move" data-dir="1" ${idx>=m.sections.length-1?'disabled':''}>Move down</button></div></div>`:''}
-        ${del(`“${esc(s.title)}” and its ${s.children.length} subtopics`,'del-sec-yes')}
+        <div class="field"><span class="lbl">Line colour</span><div class="colors">${COLORS.map(c=>`<label><input type="radio" name="color" value="${c}" ${s.color===c?'checked':''} aria-label="Colour ${c.slice(1)}"><span style="--c:var(--${c})"></span></label>`).join('')}</div></div>
+        ${!md.isNew?`<div class="field"><span class="lbl">Position on the line</span><div style="display:flex;gap:8px"><button type="button" class="btn" data-act="sec-move" data-dir="-1" ${idx<=0?'disabled':''}>Move up</button><button type="button" class="btn" data-act="sec-move" data-dir="1" ${idx>=m.sections.length-1?'disabled':''}>Move down</button></div></div>`:''}
+        ${del(`“${esc(s.title)}” and its ${s.children.length} stops`,'del-sec-yes')}
         <div class="actions">${md.isNew?'':`<button type="button" class="btn ghost" data-act="del-ask" style="color:var(--danger)">Delete</button>`}<span class="sp"></span>
-          <button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">${md.isNew?'Add':'Save'}</button></div></form>`;
+          <button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">${md.isNew?'Add station':'Save'}</button></div></form>`;
     }
+  }else if(md.type==='menu'){
+    h=`<div class="panel"><h2>Start a new line</h2>
+      <div class="upnext menu">
+        ${S.sample?`<button data-act="ai" style="--c:var(--accent)"><i></i><span><b>Plan a route with Claude</b><br><small>Describe your goal and time; get a full map in under a minute.</small></span></button>`:''}
+        <button data-act="new-map" style="--c:var(--c3)"><i></i><span><b>Draw one yourself</b><br><small>Start empty and add stations and stops.</small></span></button>
+        <button data-act="import" style="--c:var(--c2)"><i></i><span><b>Paste an outline</b><br><small>Turn an indented list into a map.</small></span></button>
+      </div><div class="actions"><span class="sp"></span><button class="btn" data-act="close">Cancel</button></div></div>`;
+  }else if(md.type==='ai'){
+    const v=md.v||{goal:'',level:'Beginner',weeks:8,hours:6};
+    h=`<form class="panel" id="aiForm"><h2>Plan a route with Claude</h2><p class="lead">Say where you want to end up. Claude lays out the stations in order, marks what's essential, and estimates the hours.</p>
+      <div class="field"><label for="a-goal">Destination</label><textarea id="a-goal" name="goal" required maxlength="400" autofocus placeholder="e.g. Crack DBMS questions in placement interviews, or ship my first React app">${esc(v.goal)}</textarea></div>
+      <div class="frow"><div class="field"><label for="a-level">Starting from</label><select id="a-level" name="level">${['Complete beginner','Beginner','Intermediate','Advanced'].map(x=>`<option ${v.level===x?'selected':''}>${x}</option>`).join('')}</select></div>
+        <div class="field"><label for="a-weeks">Weeks</label><input id="a-weeks" name="weeks" type="number" min="1" max="52" value="${v.weeks}"></div>
+        <div class="field"><label for="a-hours">Hours per week</label><input id="a-hours" name="hours" type="number" min="1" max="60" value="${v.hours}"></div></div>
+      ${md.busy?`<div class="laying"><div class="rail"></div><span id="layMsg">Surveying the route…</span></div>`:''}
+      ${md.err?`<div class="confirm"><span>${esc(md.err)}</span></div>`:''}
+      <div class="actions"><span class="sp"></span><button type="button" class="btn" data-act="close">${md.busy?'Stop':'Cancel'}</button><button class="btn accent" ${md.busy?'disabled':''}>Plan my route</button></div></form>`;
   }else if(md.type==='map'){
     const r=md.map;
-    h=`<form class="panel" id="mapForm"><h2>${md.isNew?'New roadmap':'Edit roadmap'}</h2>
+    h=`<form class="panel" id="mapForm"><h2>${md.isNew?'New line':'Edit line'}</h2>
       <div class="field"><label for="m-name">Name</label><input id="m-name" name="name" required maxlength="80" value="${esc(r.name)}" autofocus placeholder="e.g. DBMS Roadmap"></div>
-      <div class="field"><label for="m-sum">Summary</label><textarea id="m-sum" name="summary" maxlength="400" placeholder="Who it's for and what it covers">${esc(r.summary)}</textarea></div>
+      <div class="field"><label for="m-sum">Summary</label><textarea id="m-sum" name="summary" maxlength="400" placeholder="Who it's for and where it leads">${esc(r.summary)}</textarea></div>
       ${del(`“${esc(r.name)}”`,'del-map-yes')}
-      <div class="actions">${md.isNew?`<button type="button" class="btn ghost" data-act="import">Paste an outline instead</button>`:`<button type="button" class="btn ghost" data-act="del-ask" style="color:var(--danger)">Delete roadmap</button>`}<span class="sp"></span>
+      <div class="actions">${md.isNew?'':`<button type="button" class="btn ghost" data-act="del-ask" style="color:var(--danger)">Delete line</button>`}<span class="sp"></span>
         <button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">${md.isNew?'Create':'Save'}</button></div></form>`;
   }else if(md.type==='import'){
     h=`<form class="panel" id="impForm"><h2>Paste an outline</h2>
-      <p class="lead">Put each topic on its own line, with its subtopics indented below it. End a subtopic with ! for “must know” or ? for “optional”. Add a link after a | sign.</p>
+      <p class="lead">One station per line, with its stops indented below. End a stop with ! for must know or ? for optional, add ~3h for time, and | then a link.</p>
       <textarea id="imp" name="text" class="mono" style="min-height:260px" autofocus>${esc(md.text||'')}</textarea>
-      <div class="actions"><span class="sp"></span><button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">Create roadmap</button></div></form>`;
+      <div class="actions"><span class="sp"></span><button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">Create line</button></div></form>`;
+  }else if(md.type==='journey'){
+    const st=stats(m);const p=pace(m);const sk=streak();const next=upNext(m,3);
+    const cells=[];const today=new Date();const start=new Date(today.getTime()-(69+((today.getDay()+6)%7))*DAY);
+    // 11 weeks, Monday-first columns ending this week
+    for(let t=start.getTime(),i=0;i<77;i++,t+=DAY){if(t>today.getTime())break;const n=(S.prog.log||{})[dayKey(t)]||0;const lvl=n>=4?3:n>=2?2:n>=1?1:0;
+      cells.push(`<i class="${lvl?'l'+lvl:''} ${dayKey(t)===dayKey(today)?'today':''}" title="${dayKey(t)}: ${n} stop${n===1?'':'s'}"></i>`)}
+    const riders=S.cohort.filter(c=>c.maps&&c.maps[m.id]).map(c=>({id:c.id,...c.maps[m.id]})).sort((a,b)=>(b.done/b.total)-(a.done/a.total));
+    h=`<div class="panel"><h2>Your journey</h2>
+      <div class="jgrid"><div><div class="k">Streak</div><div class="v">${sk} <small>day${sk===1?'':'s'}</small></div></div>
+        <div><div class="k">Covered</div><div class="v">${st.pct}% <small>${st.done}/${st.total}</small></div></div>
+        <div><div class="k">Time left</div><div class="v">${fmtH(st.hLeft)}</div></div></div>
+      <div class="field"><span class="lbl">Stops completed, last 11 weeks</span><div class="heat" aria-label="Activity heatmap">${cells.join('')}</div></div>
+      <div class="field"><label for="goal">Finish by</label><div class="copyrow"><input id="goal" type="date" value="${esc((S.prog.goal||{})[m.id]||'')}" min="${dayKey(Date.now())}"><button class="btn" data-act="set-goal">Save date</button></div>
+        ${p?`<span style="font-size:14px;color:var(--muted)">${p.left?(p.days?`About <b style="color:var(--ink)">${fmtH(p.per)} a day</b> for ${p.days} day${p.days===1?'':'s'} covers the remaining must-know and good-to-know stops.`:'Your finish date is today.'):'Everything essential is done.'} ${p.week?`You completed ${p.week} stop${p.week===1?'':'s'} in the last 7 days.`:''}</span>`:''}</div>
+      ${next.length?`<div class="field"><span class="lbl">Up next</span><div class="upnext">${next.map(x=>`<button data-act="goto" data-id="${esc(x.k.id)}" style="--c:var(--${x.s.color||'c1'})"><i></i><span>${esc(x.k.title)}</span><small>~${fmtH(hoursOf(x.k))}</small></button>`).join('')}</div></div>`:''}
+      ${S.mode==='db'?`<div class="field"><span class="lbl">Riders on this line</span>
+        <label class="switch"><input type="checkbox" id="shareProg" ${S.prog.share?'checked':''}> Show my progress to others who open this page</label>
+        <div class="riders">${riders.length?riders.map(r=>{const p2=S.people[r.id]||{};const pc=r.total?Math.round(r.done/r.total*100):0;
+          return `<div class="rider"><img src="${esc(p2.avatarUrl||'')}" alt=""><span class="nm">${esc(p2.name||'Someone')}${r.id===S.uid?' (you)':''}</span><div class="track"><i style="width:${pc}%"></i></div><span class="pc">${pc}%</span></div>`}).join(''):`<span style="font-size:14px;color:var(--muted)">No one is sharing progress on this line yet.</span>`}</div></div>`:''}
+      <div class="actions"><span class="sp"></span><button class="btn primary" data-act="close">Close</button></div></div>`;
   }else if(md.type==='share'){
-    h=`<div class="panel"><h2>Share this roadmap</h2>
-      ${S.mode==='db'?`<div class="share-step"><h3>1. Invite people</h3><p>Use the <b>Share</b> menu at the top of this page. Viewers can follow the roadmap and tick off their own progress. Give Contributor access to people who should edit it.</p></div>`:`<p class="lead">This copy saves to your browser only. Open the published page on claude.ai while signed in to share a live roadmap.</p>`}
-      <div class="share-step"><h3>${S.mode==='db'?'2. ':''}Link straight to this roadmap</h3><p>Add this to the end of the page link.</p>
+    h=`<div class="panel"><h2>Share this line</h2>
+      ${S.mode==='db'?`<div class="share-step"><h3>1. Invite riders</h3><p>Use the <b>Share</b> menu at the top of this page. Everyone who opens it tracks their own progress. Give Contributor access to people who should edit the map.</p></div>`:`<p class="lead">This copy saves to your browser only. Open the published page on claude.ai while signed in to share a live line.</p>`}
+      <div class="share-step"><h3>${S.mode==='db'?'2. ':''}Link straight to this line</h3><p>Add this to the end of the page link.</p>
         <div class="copyrow"><input id="anchor" readonly value="#${esc(m.id)}"><button class="btn" data-act="copy" data-src="anchor">Copy</button></div></div>
       <div class="share-step"><h3>${S.mode==='db'?'3. ':''}Post it as a checklist</h3><p>Markdown with your progress ticked, for a README, Notion or Discord.</p>
         <textarea id="mdOut" class="mono" readonly>${esc(toMarkdown(m))}</textarea>
@@ -460,8 +694,7 @@ function renderModal(force){
   }
   o.innerHTML=`<div class="ov" data-act="backdrop" role="dialog" aria-modal="true">${h}</div>`;
 }
-let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
-const clone=m=>JSON.parse(JSON.stringify(m));
+let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2800)}
 function formVals(id){const f=document.getElementById(id);const o={};if(f)for(const[k,v]of new FormData(f).entries())o[k]=v;return o}
 
 /* ---------- actions ---------- */
@@ -476,36 +709,44 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='rm')setCurrent(e.target.value);
+  if(e.target.id==='shareProg')setShare(e.target.checked);
   if(e.target.dataset&&e.target.dataset.done)toggleDone(e.target.dataset.done);
 });
 document.addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]');
   if(!el){const n=e.target.closest('[data-open],[data-sec]');if(n&&!n.matches('input'))openNode(n);return}
   const a=el.dataset.act;const m=cur();
-  if(a==='backdrop'){if(e.target===el)closeModal();return}
+  if(a==='backdrop'){if(e.target===el&&!(S.modal&&S.modal.busy))closeModal();return}
   if(a==='close'){closeModal();return}
   if(a==='view'){S.view=el.dataset.v;ls('waypoint-view',S.view);S.cam=null;render();return}
   if(a==='edit'){S.editing=!S.editing;render();return}
   if(a==='zin'||a==='zout'){const vp=$('#vp');zoomAt(a==='zin'?1.2:1/1.2,vp.clientWidth/2,vp.clientHeight/2);return}
   if(a==='fit'){S.cam=null;applyCam();return}
-  if(a==='share'){if(m)openModal({type:'share'});else toast('Create a roadmap first.');return}
+  if(a==='share'){if(m)openModal({type:'share'});else toast('Create a line first.');return}
+  if(a==='journey'){openModal({type:'journey'});return}
+  if(a==='new-menu'){openModal({type:'menu'});return}
+  if(a==='ai'){openModal({type:'ai'});return}
   if(a==='new-map'){openModal({type:'map',map:{name:'',summary:''},isNew:true});return}
   if(a==='edit-map'){openModal({type:'map',map:clone(m),isNew:false});return}
   if(a==='import'){openModal({type:'import',text:SAMPLE.replace('# Example: Learn Git','# My roadmap').replace(/^> .*\n/m,'')});return}
   if(a==='new-sec'){openModal({type:'sec',s:{id:newId('s'),title:'',color:COLORS[m.sections.length%COLORS.length],children:[]},isNew:true});return}
-  if(a==='new-kid'){const s=m.sections.find(x=>x.id===el.dataset.s);openModal({type:'kid',s,k:{id:newId('k'),title:'',level:'good',note:'',links:[]},isNew:true});return}
-  if(a==='toggle'){await toggleDone(el.dataset.id);closeModal();return}
-  if(a==='sec-all'){const s=m.sections.find(x=>x.id===el.dataset.id);const d=doneSet(m.id);s.children.forEach(k=>d.add(k.id));S.done[m.id]=[...d];closeModal();
-    if(S.mode==='db'){if(S.uid)try{await S.db.collection('data/users/'+S.uid).doc('progress').set({done:S.done})}catch(err){toast('Your progress did not save. Try again.')}}else saveLocal();render();return}
+  if(a==='new-kid'){const s=m.sections.find(x=>x.id===el.dataset.s);openModal({type:'kid',s,k:{id:newId('k'),title:'',level:'good',hours:0,note:'',links:[]},isNew:true});return}
+  if(a==='open'){const r=findKid(m,el.dataset.id);if(r)openModal({type:'kid',k:clone(r.k),s:r.s,isNew:false});return}
+  if(a==='goto'){closeModal();flyTo(el.dataset.id);setTimeout(()=>{const r=findKid(cur(),el.dataset.id);if(r)openModal({type:'kid',k:clone(r.k),s:r.s,isNew:false})},620);return}
+  if(a==='toggle'){const dn=doneSet(m.id).has(el.dataset.id);toggleDone(el.dataset.id);closeModal();if(!dn){const nx=upNext(m,1)[0];toast(nx?`Next stop: ${nx.k.title}`:'Line complete. You made it!')}return}
+  if(a==='explain'){const r=findKid(m,S.modal.k.id);if(r)explain(r.k,r.s,m);return}
+  if(a==='set-goal'){const v=$('#goal').value;S.prog.goal=S.prog.goal||{};if(v)S.prog.goal[m.id]=v;else delete S.prog.goal[m.id];saveProgress();render();renderModal(true);toast(v?'Finish date saved':'Finish date cleared');return}
+  if(a==='sec-all'){const s=m.sections.find(x=>x.id===el.dataset.id);const set=doneSet(m.id);let added=0;s.children.forEach(k=>{if(!set.has(k.id)){set.add(k.id);added++}});
+    S.prog.done[m.id]=[...set];if(added){const t=dayKey(Date.now());S.prog.log[t]=(S.prog.log[t]||0)+added}closeModal();render();saveProgress();return}
   if(a==='del-ask'||a==='del-no'){keepForm();S.modal.confirm=a==='del-ask';renderModal(true);return}
-  if(a==='del-kid-yes'){const mm=clone(m);mm.sections.forEach(s=>s.children=s.children.filter(k=>k.id!==S.modal.k.id));closeModal();await saveMap(mm);toast('Subtopic deleted');return}
-  if(a==='del-sec-yes'){const mm=clone(m);mm.sections=mm.sections.filter(s=>s.id!==S.modal.s.id);closeModal();await saveMap(mm);toast('Topic deleted');return}
-  if(a==='del-map-yes'){const id=S.modal.map.id;closeModal();await deleteMap(id);toast('Roadmap deleted');return}
+  if(a==='del-kid-yes'){const mm=clone(m);mm.sections.forEach(s=>s.children=s.children.filter(k=>k.id!==S.modal.k.id));closeModal();await saveMap(mm);toast('Stop deleted');return}
+  if(a==='del-sec-yes'){const mm=clone(m);mm.sections=mm.sections.filter(s=>s.id!==S.modal.s.id);closeModal();await saveMap(mm);toast('Station deleted');return}
+  if(a==='del-map-yes'){const id=S.modal.map.id;closeModal();await deleteMap(id);toast('Line deleted');return}
   if(a==='sec-move'){const mm=clone(m);const i=mm.sections.findIndex(s=>s.id===S.modal.s.id);const j=i+(+el.dataset.dir);if(j<0||j>=mm.sections.length)return;
     [mm.sections[i],mm.sections[j]]=[mm.sections[j],mm.sections[i]];keepForm();await saveMap(mm);renderModal(true);return}
   if(a==='copy'||a==='copy-outline'){
-    let src=a==='copy'?document.getElementById(el.dataset.src):null;const text=src?src.value:toOutline(m);
-    try{await navigator.clipboard.writeText(text);toast('Copied')}catch(err){if(src){src.focus();src.select();toast('Press Ctrl+C or ⌘C to copy the selected text')}else{const t=$('#mdOut');t.value=text;t.focus();t.select();toast('Outline selected. Press Ctrl+C or ⌘C to copy.')}}
+    const src=a==='copy'?document.getElementById(el.dataset.src):null;const text=src?src.value:toOutline(m);
+    try{await navigator.clipboard.writeText(text);toast('Copied')}catch(err){const t=src||$('#mdOut');if(!src)t.value=text;t.focus();t.select();toast('Selected. Press Ctrl+C or ⌘C to copy.')}
     return}
   if(a==='download'){
     try{await S.downloads.save({filename:(m.name||'roadmap').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-').toLowerCase()+'.md',data:toMarkdown(m)})}catch(err){if(err&&err.code==='unavailable'){S.downloads=null;renderModal(true)}}
@@ -513,31 +754,37 @@ document.addEventListener('click',async e=>{
 });
 function keepForm(){ // carry typed values across a dialog re-render
   const md=S.modal;if(!md)return;
-  if(md.type==='kid'&&$('#kidForm')){const v=formVals('kidForm');Object.assign(md.k,{title:v.title,level:v.level,note:v.note,links:parseLinks(v.links)})}
+  if(md.type==='kid'&&$('#kidForm')){const v=formVals('kidForm');Object.assign(md.k,{title:v.title,level:v.level,hours:+v.hours||0,note:v.note,links:parseLinks(v.links)})}
   if(md.type==='sec'&&$('#secForm')){const v=formVals('secForm');md.s.title=v.title;md.s.color=v.color||md.s.color}
   if(md.type==='map'&&$('#mapForm')){const v=formVals('mapForm');md.map.name=v.name;md.map.summary=v.summary}
+  if(md.type==='ai'&&$('#aiForm')){const v=formVals('aiForm');md.v={goal:v.goal||'',level:v.level,weeks:Math.min(52,Math.max(1,+v.weeks||8)),hours:Math.min(60,Math.max(1,+v.hours||6))}}
 }
 function parseLinks(t){return(t||'').split(/\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const i=l.lastIndexOf('|');const url=safeUrl(i>=0?l.slice(i+1):l);return url?{label:i>=0?l.slice(0,i).trim():'',url}:null}).filter(Boolean).slice(0,10)}
 
 document.addEventListener('submit',async e=>{
   e.preventDefault();const md=S.modal;if(!md)return;keepForm();const m=cur();
   if(md.type==='kid'){
-    const k=md.k;k.title=(k.title||'').trim();if(!k.title){toast('Give the subtopic a title.');return}
+    const k=md.k;k.title=(k.title||'').trim();if(!k.title){toast('Give the stop a title.');return}
     const mm=clone(m);const s=mm.sections.find(x=>x.id===md.s.id);if(!s)return;
     const i=s.children.findIndex(x=>x.id===k.id);if(i<0)s.children.push(k);else s.children[i]=k;
     closeModal();await saveMap(mm);
   }else if(md.type==='sec'){
-    const s=md.s;s.title=(s.title||'').trim();if(!s.title){toast('Give the topic a title.');return}
+    const s=md.s;s.title=(s.title||'').trim();if(!s.title){toast('Give the station a title.');return}
     const mm=clone(m);const i=mm.sections.findIndex(x=>x.id===s.id);
     if(i<0)mm.sections.push(s);else mm.sections[i]={...mm.sections[i],title:s.title,color:s.color};
     closeModal();await saveMap(mm);
   }else if(md.type==='map'){
-    const r=md.map;r.name=(r.name||'').trim();if(!r.name){toast('Give the roadmap a name.');return}
-    if(md.isNew){const nm={id:newId('m'),createdAt:Date.now(),name:r.name,summary:(r.summary||'').trim(),sections:[]};closeModal();S.editing=true;await saveMap(nm);setCurrent(nm.id);toast('Roadmap created. Add your first topic.')}
+    const r=md.map;r.name=(r.name||'').trim();if(!r.name){toast('Give the line a name.');return}
+    if(md.isNew){const nm={id:newId('m'),createdAt:Date.now(),name:r.name,summary:(r.summary||'').trim(),sections:[]};closeModal();S.editing=true;await saveMap(nm);setCurrent(nm.id);toast('Line created. Add your first station.')}
     else{const mm=clone(m);mm.name=r.name;mm.summary=(r.summary||'').trim();closeModal();await saveMap(mm)}
   }else if(md.type==='import'){
-    const v=formVals('impForm');const p=parseOutline(v.text||'');if(!p.sections.length){toast('Add at least one topic line.');return}
-    const nm={id:newId('m'),createdAt:Date.now(),...p};closeModal();await saveMap(nm);setCurrent(nm.id);toast('Roadmap created');
+    const v=formVals('impForm');const p=parseOutline(v.text||'');if(!p.sections.length){toast('Add at least one station line.');return}
+    const nm={id:newId('m'),createdAt:Date.now(),...p};closeModal();await saveMap(nm);setCurrent(nm.id);toast('Line created');
+  }else if(md.type==='ai'){
+    if(md.busy)return;const v=md.v;if(!v.goal.trim()){toast('Describe where you want to end up.');return}
+    md.busy=true;md.err='';renderModal(true);
+    try{const nm=await generateRoute(v);if(S.modal!==md)return;closeModal();await saveMap(nm);setCurrent(nm.id);toast('Route planned. All aboard!')}
+    catch(err){if(S.modal!==md||(err&&err.code==='cancelled'))return;md.busy=false;md.err=aiErrMsg(err);renderModal(true)}
   }
 });
 
