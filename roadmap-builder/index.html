@@ -1,0 +1,486 @@
+<title>Waypoint Roadmaps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a route line of three stations (Now / Next / Later) heads a board of lanes; toolbar on top, summary before cards. */
+:root{
+  --bg:#F2F4F8; --surface:#FFFFFF; --sunk:#E8ECF3; --ink:#141A29; --muted:#5A6378; --line:#D8DEE8;
+  --accent:#2B55E6; --accent-ink:#FFFFFF; --accent-soft:#E3E9FD;
+  --now:#D2461A; --next:#2B55E6; --later:#6D7488;
+  --ok:#1E8A55; --ok-soft:#DDF3E7; --warn:#B7700A; --warn-soft:#FBEFD9; --danger:#C0322B; --danger-soft:#FBE3E1;
+  --shadow:0 1px 2px rgba(20,26,41,.06),0 4px 14px rgba(20,26,41,.05);
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D111A; --surface:#151B27; --sunk:#1B2231; --ink:#E7EBF3; --muted:#98A1B6; --line:#262F41;
+  --accent:#7D9BFF; --accent-ink:#0D111A; --accent-soft:#1E2945;
+  --now:#FF875A; --next:#7D9BFF; --later:#A0A8BB;
+  --ok:#4CC98A; --ok-soft:#15301F; --warn:#F0AE45; --warn-soft:#352812; --danger:#FF7A72; --danger-soft:#3A1917;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D111A; --surface:#151B27; --sunk:#1B2231; --ink:#E7EBF3; --muted:#98A1B6; --line:#262F41;
+  --accent:#7D9BFF; --accent-ink:#0D111A; --accent-soft:#1E2945;
+  --now:#FF875A; --next:#7D9BFF; --later:#A0A8BB;
+  --ok:#4CC98A; --ok-soft:#15301F; --warn:#F0AE45; --warn-soft:#352812; --danger:#FF7A72; --danger-soft:#3A1917;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding:0 16px;padding-block:0 48px}
+.wrap{max-width:1180px;margin:0 auto}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding-block:14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:700;font-size:18px;margin-right:auto}
+.brand svg{flex:none}
+.pick{display:flex;align-items:center;gap:6px;min-width:0}
+select,input,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
+select{max-width:220px}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;font-weight:500;font-size:14px;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{color:var(--ink);background:var(--sunk)}
+.btn.danger{color:var(--danger);border-color:var(--danger-soft);background:var(--danger-soft)}
+.seg{display:inline-flex;background:var(--sunk);border-radius:9px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:5px 12px;border-radius:7px;font-size:14px;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+.note{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--ink);font-size:14px}
+.note b{color:var(--warn)}
+
+/* summary */
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;padding-block:28px 18px}
+.head h1{font-size:clamp(28px,4.5vw,44px);font-weight:700;letter-spacing:-.01em}
+.head p{margin:8px 0 0;color:var(--muted);max-width:62ch}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.stats{display:flex;gap:22px;align-items:flex-end}
+.stat b{display:block;font-family:var(--f-display);font-size:26px;font-variant-numeric:tabular-nums;line-height:1}
+.stat span{font-size:12px;color:var(--muted);font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.06em}
+.progress{height:6px;border-radius:99px;background:var(--sunk);overflow:hidden;margin-top:8px;width:160px}
+.progress i{display:block;height:100%;background:var(--ok);border-radius:inherit}
+
+.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding-bottom:16px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:3px 11px;font-size:13px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filters .lbl{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:4px}
+
+/* route line */
+.route{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:6px}
+.route::before{content:"";position:absolute;left:8px;right:8px;top:8px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--now),var(--next) 50%,var(--later))}
+.stop{position:relative;display:flex;align-items:center;gap:8px;padding-top:0}
+.stop i{width:19px;height:19px;border-radius:50%;background:var(--bg);border:4px solid var(--c);flex:none;position:relative;z-index:1}
+
+/* board */
+.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.scroller{overflow-x:auto;padding-bottom:8px}
+.board.tl{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr)}
+.lane{background:var(--sunk);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0;border:2px dashed transparent;transition:border-color .15s}
+.lane.over{border-color:var(--c,var(--accent))}
+.lane-h{display:flex;align-items:baseline;gap:8px;padding:2px 2px 4px}
+.lane-h h2{font-size:18px;font-weight:700;color:var(--c,var(--ink))}
+.lane-h small{color:var(--muted);font-size:13px}
+.lane-h .n{margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);text-align:left;width:100%;min-width:0}
+.card[draggable="true"]{cursor:grab}
+.card.dragging{opacity:.45}
+.card h3{font-family:var(--f-body);font-size:15px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.card p{margin:0;color:var(--muted);font-size:13.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.card .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.theme{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);letter-spacing:.03em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{font-size:12px;font-weight:600;border-radius:99px;padding:2px 9px;white-space:nowrap}
+.pill.planned{background:var(--sunk);color:var(--muted)}
+.pill.building{background:var(--warn-soft);color:var(--warn)}
+.pill.shipped{background:var(--ok-soft);color:var(--ok)}
+.q{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.vote{margin-left:auto;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:transparent;border-radius:7px;padding:2px 8px;font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.vote[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.vote:disabled{cursor:default;opacity:.8}
+.add{border:1px dashed var(--line);background:transparent;border-radius:10px;padding:9px;color:var(--muted);font-size:14px;font-weight:500}
+.add:hover{color:var(--ink);border-color:var(--muted)}
+.lane .empty{color:var(--muted);font-size:13px;padding:6px 2px}
+
+/* empty state */
+.hero-empty{padding-block:64px;max-width:560px}
+.hero-empty h1{font-size:34px;margin-bottom:10px}
+.hero-empty p{color:var(--muted);margin:0 0 20px}
+
+/* overlay */
+.ov{position:fixed;inset:0;z-index:20;background:rgba(10,14,22,.45);display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow-y:auto}
+.panel{background:var(--surface);border-radius:14px;width:100%;max-width:520px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);border:1px solid var(--line)}
+.panel h2{font-size:22px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:13px;font-weight:600;color:var(--muted)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+textarea{resize:vertical;min-height:84px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-top:4px}
+.actions .sp{flex:1}
+.confirm{background:var(--danger-soft);border-radius:10px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.confirm span{flex:1 1 180px;font-size:14px}
+.share-step{display:flex;flex-direction:column;gap:6px}
+.share-step h3{font-family:var(--f-body);font-size:14px;font-weight:600}
+.share-step p{margin:0;color:var(--muted);font-size:14px}
+.copyrow{display:flex;gap:8px}
+.copyrow input{flex:1;font-family:var(--f-mono);font-size:13px}
+.md{font-family:var(--f-mono);font-size:12.5px;min-height:150px;width:100%}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:9px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
+
+body.present .edit-only{display:none!important}
+body.present .head h1{font-size:clamp(32px,5.5vw,56px)}
+
+@media (max-width:760px){
+  .head{grid-template-columns:1fr}
+  .board:not(.tl){grid-template-columns:1fr}
+  .route{display:none}
+  .lane-h h2::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:8px;vertical-align:middle}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 17 C8 17 8 5 13 5 S19 11 19 11" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round"/><circle cx="3" cy="17" r="2.6" fill="var(--now)"/><circle cx="19" cy="11" r="2.6" fill="var(--later)"/></svg>
+      Waypoint
+    </div>
+    <div class="pick" id="pick"></div>
+    <div class="seg" role="group" aria-label="View">
+      <button id="v-board" data-act="view" data-v="board">Board</button>
+      <button id="v-tl" data-act="view" data-v="timeline">Timeline</button>
+    </div>
+    <button class="btn" data-act="present" id="presentBtn">Present</button>
+    <button class="btn primary" data-act="share">Share</button>
+  </header>
+  <div id="notice"></div>
+  <main id="main"></main>
+</div>
+<div id="overlay"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+const LANES=[{id:'now',name:'Now',hint:'Being built'},{id:'next',name:'Next',hint:'Up after this'},{id:'later',name:'Later',hint:'On the horizon'}];
+const STATUS={planned:'Planned',building:'In progress',shipped:'Shipped'};
+const S={mode:'loading',roadmaps:[],items:[],voteCounts:{},myVotes:[],current:null,view:'board',present:false,theme:null,
+  canWrite:true,uid:null,db:null,downloads:null,ready:{r:false,i:false},modal:null,readOnlyNotice:false};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const newId=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+
+/* ---------- storage: shared db when available, this browser otherwise ---------- */
+function sampleData(){
+  const r='rexample';const t=Date.now();
+  const it=(title,detail,lane,status,theme,quarter,o)=>({id:newId('i'),roadmapId:r,title,detail,lane,status,theme,quarter,order:o,updatedAt:t});
+  return{roadmaps:[{id:r,name:'Example: Team Wiki Launch',summary:'Example roadmap to show how Waypoint works. Edit it or make your own.',createdAt:t}],
+    items:[it('Page editor with slash commands','Rich text editor with headings, checklists and code blocks.','now','building','Editor','Q4 2026',1),
+      it('Sign in with Google','Single sign-on for the whole workspace.','now','shipped','Accounts','Q4 2026',2),
+      it('Full-text search','Search across every page, with filters by space and author.','next','planned','Search','Q1 2027',1),
+      it('Page history','See and restore earlier versions of a page.','next','planned','Editor','Q1 2027',2),
+      it('Public help center','Publish chosen spaces as a public site.','later','planned','Publishing','Q2 2027',1)]};
+}
+function saveLocal(){ls('waypoint-local',JSON.stringify({roadmaps:S.roadmaps,items:S.items,myVotes:S.myVotes}))}
+function startLocal(){
+  S.mode='local';let d=null;try{d=JSON.parse(ls('waypoint-local')||'null')}catch(e){}
+  if(!d||!d.roadmaps)d=sampleData();
+  S.roadmaps=d.roadmaps;S.items=d.items||[];S.myVotes=d.myVotes||[];countVotesLocal();
+  S.ready={r:true,i:true};pickCurrent();render();
+}
+function countVotesLocal(){S.voteCounts={};S.myVotes.forEach(id=>S.voteCounts[id]=1)}
+
+function onWriteErr(e){
+  const code=e&&e.code;
+  if(code==='invalid_argument'||code==='not_granted'||code==='revoked'){S.canWrite=false;S.readOnlyNotice=true;render();toast('You can view this roadmap but not change it.')}
+  else if(code==='quota_exceeded')toast('Storage is full. Delete some items or roadmaps, then try again.');
+  else if(code==='resource_exhausted')toast('Too many changes at once. Wait a moment and try again.');
+  else toast('That change did not save. Check your connection and try again.');
+}
+async function put(coll,id,data){
+  if(S.mode==='db'){try{await S.db.collection(coll).doc(id).set(data)}catch(e){onWriteErr(e)}return}
+  const arr=coll==='roadmaps'?S.roadmaps:S.items;const i=arr.findIndex(x=>x.id===id);
+  const row={id,...data};if(i<0)arr.push(row);else arr[i]=row;saveLocal();render();
+}
+async function del(coll,id){
+  if(S.mode==='db'){try{await S.db.collection(coll).doc(id).delete()}catch(e){onWriteErr(e)}return}
+  const arr=coll==='roadmaps'?S.roadmaps:S.items;const i=arr.findIndex(x=>x.id===id);if(i>=0)arr.splice(i,1);saveLocal();render();
+}
+function strip(o){const{id,...rest}=o;return rest}
+
+async function boot(){
+  render();
+  const c=window.claude;
+  const db=c&&c.use?await c.use('db').catch(()=>null):null;
+  if(!db){startLocal();return}
+  S.mode='db';S.db=db;
+  const user=await c.use('user').catch(()=>null);
+  if(user){try{S.uid=await user.id()}catch(e){}try{if(await user.can('data.write')===false)S.canWrite=false}catch(e){}}
+  c.use('downloads').then(d=>{S.downloads=d}).catch(()=>{});
+  const fail=e=>{if(e&&(e.code==='revoked'||e.code==='not_granted')){S.canWrite=false}S.ready={r:true,i:true};render()};
+  db.collection('roadmaps').onSnapshot(s=>{S.roadmaps=s.docs.map(d=>({id:d.id,...d.data()}));S.ready.r=true;pickCurrent();render()},fail);
+  db.collection('items').onSnapshot(s=>{S.items=s.docs.map(d=>({id:d.id,...d.data()}));S.ready.i=true;render()},fail);
+  db.collection('votes').onSnapshot(s=>{
+    const counts={};let mine=[];
+    s.docs.forEach(d=>{const ids=(d.data().items)||[];ids.forEach(id=>counts[id]=(counts[id]||0)+1);if(d.id===S.uid)mine=ids.slice()});
+    S.voteCounts=counts;S.myVotes=mine;render();
+  },()=>{});
+}
+
+/* ---------- selection ---------- */
+function sortedRoadmaps(){return S.roadmaps.slice().sort((a,b)=>(a.createdAt||0)-(b.createdAt||0))}
+function pickCurrent(){
+  const h=(location.hash||'').slice(1);
+  if(h&&S.roadmaps.some(r=>r.id===h)){S.current=h;return}
+  if(S.current&&S.roadmaps.some(r=>r.id===S.current))return;
+  const saved=ls('waypoint-current');
+  S.current=(saved&&S.roadmaps.some(r=>r.id===saved))?saved:(sortedRoadmaps()[0]||{}).id||null;
+}
+function setCurrent(id){S.current=id;S.theme=null;ls('waypoint-current',id);try{history.replaceState(null,'','#'+id)}catch(e){location.hash=id}render()}
+window.addEventListener('hashchange',()=>{pickCurrent();render()});
+const cur=()=>S.roadmaps.find(r=>r.id===S.current);
+const itemsOf=id=>S.items.filter(i=>i.roadmapId===id);
+
+/* ---------- render ---------- */
+function qKey(q){const m=/^Q([1-4])\s*(\d{4})$/i.exec((q||'').trim());return m?(+m[2])*10+(+m[1]):null}
+function upcomingQuarters(){const d=new Date();let y=d.getFullYear(),q=Math.floor(d.getMonth()/3)+1;const out=[];for(let k=0;k<8;k++){out.push('Q'+q+' '+y);q++;if(q>4){q=1;y++}}return out}
+function editable(){return S.canWrite&&!S.present}
+
+function cardHTML(it){
+  const n=S.voteCounts[it.id]||0,mine=S.myVotes.includes(it.id);
+  const canVote=S.mode==='local'||(S.uid&&S.canWrite);
+  return `<article class="card" ${editable()?'draggable="true"':''} data-id="${esc(it.id)}">
+    <div class="top"><span class="theme">${esc(it.theme||'')}</span></div>
+    <h3>${esc(it.title)}</h3>
+    ${it.detail?`<p>${esc(it.detail)}</p>`:''}
+    <div class="meta"><span class="pill ${esc(it.status)}">${esc(STATUS[it.status]||'Planned')}</span>
+      ${it.quarter&&S.view==='board'?`<span class="q">${esc(it.quarter)}</span>`:''}
+      ${S.view==='timeline'?`<span class="q">${esc((LANES.find(l=>l.id===it.lane)||{}).name||'')}</span>`:''}
+      <button class="vote" data-act="vote" data-id="${esc(it.id)}" aria-pressed="${mine}" ${canVote?'':'disabled'} title="${canVote?(mine?'Remove your vote':'Vote for this'):'Votes'}" aria-label="${n} votes">▲ ${n}</button></div>
+  </article>`;
+}
+function laneHTML(key,title,hint,color,list,dropAttr){
+  const sorted=list.slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  return `<section class="lane" style="--c:${color}" ${dropAttr}>
+    <div class="lane-h"><h2>${esc(title)}</h2>${hint?`<small>${esc(hint)}</small>`:''}<span class="n">${list.length}</span></div>
+    ${sorted.map(cardHTML).join('')||`<div class="empty">Nothing here yet.</div>`}
+    ${editable()?`<button class="add edit-only" data-act="new-item" ${dropAttr}>+ Add item</button>`:''}
+  </section>`;
+}
+
+function render(){
+  document.body.classList.toggle('present',S.present);
+  $('#presentBtn').textContent=S.present?'Exit present':'Present';
+  $('#v-board').setAttribute('aria-pressed',S.view==='board');
+  $('#v-tl').setAttribute('aria-pressed',S.view==='timeline');
+
+  // picker
+  const rs=sortedRoadmaps();
+  $('#pick').innerHTML=rs.length?`<label for="rm" class="sr" hidden>Roadmap</label><select id="rm" data-act="pick" aria-label="Roadmap">${rs.map(r=>`<option value="${esc(r.id)}" ${r.id===S.current?'selected':''}>${esc(r.name)}</option>`).join('')}</select>
+    ${editable()?`<button class="btn ghost edit-only" data-act="edit-roadmap" title="Rename or delete">Edit</button><button class="btn ghost edit-only" data-act="new-roadmap">+ New</button>`:''}`:'';
+
+  // notices
+  const notes=[];
+  if(S.mode==='local')notes.push('<b>Saved in this browser only.</b> Open this page on claude.ai while signed in to share roadmaps with your team.');
+  if(S.mode==='db'&&!S.canWrite)notes.push('<b>View only.</b> Ask the owner for Contributor access to edit or vote.');
+  $('#notice').innerHTML=notes.map(n=>`<div class="note">${n}</div>`).join('');
+
+  const main=$('#main');
+  if(S.mode==='loading'||(S.mode==='db'&&!(S.ready.r&&S.ready.i))){main.innerHTML=`<div class="hero-empty"><div class="eyebrow">Loading</div><h1>Opening your roadmaps…</h1></div>`;return}
+  const r=cur();
+  if(!r){
+    main.innerHTML=`<div class="hero-empty"><div class="eyebrow">No roadmaps yet</div><h1>Plan what ships now, next and later.</h1>
+      <p>Create a roadmap, add items to each lane, then share the page so your team and customers can follow along and vote.</p>
+      ${S.canWrite?`<button class="btn primary" data-act="new-roadmap">Create your first roadmap</button>`:`<p>No roadmaps have been shared here yet.</p>`}</div>`;
+    return;
+  }
+  const all=itemsOf(r.id);
+  const themes=[...new Set(all.map(i=>i.theme).filter(Boolean))].sort();
+  if(S.theme&&!themes.includes(S.theme))S.theme=null;
+  const list=S.theme?all.filter(i=>i.theme===S.theme):all;
+  const shipped=all.filter(i=>i.status==='shipped').length,building=all.filter(i=>i.status==='building').length;
+  const pct=all.length?Math.round(shipped/all.length*100):0;
+
+  let body;
+  if(S.view==='board'){
+    body=`<div class="route" aria-hidden="true">${LANES.map(l=>`<div class="stop" style="--c:var(--${l.id})"><i></i></div>`).join('')}</div>
+    <div class="board">${LANES.map(l=>laneHTML(l.id,l.name,l.hint,`var(--${l.id})`,list.filter(i=>(i.lane||'later')===l.id),`data-lane="${l.id}"`)).join('')}</div>`;
+  }else{
+    const qs=[...new Set(list.map(i=>(i.quarter||'').trim()).filter(Boolean))];
+    qs.sort((a,b)=>{const ka=qKey(a),kb=qKey(b);if(ka!=null&&kb!=null)return ka-kb;if(ka!=null)return -1;if(kb!=null)return 1;return a.localeCompare(b)});
+    const cols=qs.map(q=>laneHTML(q,q,'','var(--accent)',list.filter(i=>(i.quarter||'').trim()===q),`data-quarter="${esc(q)}"`));
+    const un=list.filter(i=>!(i.quarter||'').trim());
+    if(un.length||!qs.length)cols.push(laneHTML('','Unscheduled','No quarter set','var(--later)',un,'data-quarter=""'));
+    body=`<div class="scroller"><div class="board tl">${cols.join('')}</div></div>`;
+  }
+
+  main.innerHTML=`<section class="head">
+      <div style="min-width:0"><div class="eyebrow">Product roadmap</div><h1>${esc(r.name)}</h1>${r.summary?`<p>${esc(r.summary)}</p>`:''}</div>
+      <div class="stats">
+        <div class="stat"><b>${all.length}</b><span>Items</span></div>
+        <div class="stat"><b>${building}</b><span>In progress</span></div>
+        <div class="stat"><b>${pct}%</b><span>Shipped</span><div class="progress"><i style="width:${pct}%"></i></div></div>
+      </div></section>
+    ${themes.length?`<div class="filters"><span class="lbl">Theme</span><button class="chip" data-act="theme" data-t="" aria-pressed="${!S.theme}">All</button>${themes.map(t=>`<button class="chip" data-act="theme" data-t="${esc(t)}" aria-pressed="${S.theme===t}">${esc(t)}</button>`).join('')}</div>`:''}
+    ${body}`;
+  renderModal();
+}
+
+/* ---------- modals ---------- */
+function openModal(m){S.modal=m;renderModal();setTimeout(()=>{const f=$('#overlay [autofocus]');if(f)f.focus()},0)}
+function closeModal(){S.modal=null;renderModal()}
+function renderModal(){
+  const o=$('#overlay');const m=S.modal;
+  if(!m){o.innerHTML='';return}
+  if(o.dataset.key===m.key&&o.innerHTML&&!m.dirty)return; // keep typed values
+  o.dataset.key=m.key;m.dirty=false;
+  let h='';
+  if(m.type==='item'){
+    const it=m.item,ro=!editable();
+    const qs=upcomingQuarters();
+    h=`<form class="panel" id="itemForm"><h2>${ro?esc(it.title):(m.isNew?'New item':'Edit item')}</h2>
+      ${ro?`<p style="margin:0;color:var(--muted);white-space:pre-wrap">${esc(it.detail||'No details.')}</p>
+        <div class="meta"><span class="pill ${esc(it.status)}">${esc(STATUS[it.status])}</span><span class="q">${esc((LANES.find(l=>l.id===it.lane)||{}).name||'')}${it.quarter?' · '+esc(it.quarter):''}${it.theme?' · '+esc(it.theme):''}</span></div>
+        <div class="actions"><span class="sp"></span><button type="button" class="btn" data-act="close">Close</button></div>`:
+      `<div class="field"><label for="f-title">Title</label><input id="f-title" name="title" required maxlength="140" value="${esc(it.title)}" autofocus placeholder="What are you building?"></div>
+      <div class="field"><label for="f-detail">Details</label><textarea id="f-detail" name="detail" maxlength="2000" placeholder="Why it matters, what's included">${esc(it.detail)}</textarea></div>
+      <div class="row">
+        <div class="field"><label for="f-lane">Lane</label><select id="f-lane" name="lane">${LANES.map(l=>`<option value="${l.id}" ${it.lane===l.id?'selected':''}>${l.name}</option>`).join('')}</select></div>
+        <div class="field"><label for="f-status">Status</label><select id="f-status" name="status">${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${it.status===k?'selected':''}>${v}</option>`).join('')}</select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="f-theme">Theme</label><input id="f-theme" name="theme" maxlength="40" list="themeList" value="${esc(it.theme)}" placeholder="e.g. Onboarding"><datalist id="themeList">${[...new Set(S.items.map(i=>i.theme).filter(Boolean))].map(t=>`<option value="${esc(t)}">`).join('')}</datalist></div>
+        <div class="field"><label for="f-quarter">Target quarter</label><input id="f-quarter" name="quarter" maxlength="20" list="qList" value="${esc(it.quarter)}" placeholder="${qs[0]}"><datalist id="qList">${qs.map(q=>`<option value="${q}">`).join('')}</datalist></div>
+      </div>
+      ${m.confirm?`<div class="confirm"><span>Delete “${esc(it.title)}”? This removes it for everyone.</span><button type="button" class="btn danger" data-act="del-item-yes">Delete</button><button type="button" class="btn" data-act="del-no">Keep</button></div>`:''}
+      <div class="actions">${m.isNew?'':`<button type="button" class="btn ghost" data-act="del-item" style="color:var(--danger)">Delete</button>`}<span class="sp"></span>
+        <button type="button" class="btn" data-act="close">Cancel</button><button type="submit" class="btn primary">${m.isNew?'Add item':'Save'}</button></div>`}
+    </form>`;
+  }else if(m.type==='roadmap'){
+    const r=m.roadmap;
+    h=`<form class="panel" id="rmForm"><h2>${m.isNew?'New roadmap':'Edit roadmap'}</h2>
+      <div class="field"><label for="r-name">Name</label><input id="r-name" name="name" required maxlength="80" value="${esc(r.name)}" autofocus placeholder="e.g. Mobile app 2027"></div>
+      <div class="field"><label for="r-sum">Summary</label><textarea id="r-sum" name="summary" maxlength="400" placeholder="One or two lines on what this roadmap covers">${esc(r.summary)}</textarea></div>
+      ${m.confirm?`<div class="confirm"><span>Delete “${esc(r.name)}” and its ${itemsOf(r.id).length} items? This can’t be undone.</span><button type="button" class="btn danger" data-act="del-rm-yes">Delete roadmap</button><button type="button" class="btn" data-act="del-no">Keep</button></div>`:''}
+      <div class="actions">${m.isNew?'':`<button type="button" class="btn ghost" data-act="del-rm" style="color:var(--danger)">Delete</button>`}<span class="sp"></span>
+        <button type="button" class="btn" data-act="close">Cancel</button><button type="submit" class="btn primary">${m.isNew?'Create roadmap':'Save'}</button></div></form>`;
+  }else if(m.type==='share'){
+    const r=cur();const md=r?toMarkdown(r):'';
+    h=`<div class="panel"><h2>Share this roadmap</h2>
+      ${S.mode==='local'?`<p style="margin:0;color:var(--muted)">This copy saves to your browser only. Open the published page on claude.ai while signed in to share a live roadmap.</p>`:`
+      <div class="share-step"><h3>1. Invite people</h3><p>Use the <b>Share</b> menu at the top of this page. Viewers can read and follow along. Give Contributor access to people who should edit and vote.</p></div>`}
+      ${r?`<div class="share-step"><h3>${S.mode==='local'?'':'2. '}Link to this roadmap</h3><p>Add this to the end of the page link so it opens on “${esc(r.name)}”.</p>
+        <div class="copyrow"><input id="anchor" readonly value="#${esc(r.id)}"><button class="btn" data-act="copy" data-src="anchor">Copy</button></div></div>
+      <div class="share-step"><h3>${S.mode==='local'?'':'3. '}Post it anywhere</h3><p>Paste this Markdown into a doc, README, Slack or Notion.</p>
+        <textarea id="mdOut" class="md" readonly>${esc(md)}</textarea>
+        <div class="actions"><button class="btn" data-act="copy" data-src="mdOut">Copy Markdown</button>${S.downloads?`<button class="btn" data-act="download">Download .md</button>`:''}<span class="sp"></span><button class="btn primary" data-act="close">Done</button></div></div>`:`<div class="actions"><span class="sp"></span><button class="btn primary" data-act="close">Done</button></div>`}
+    </div>`;
+  }
+  o.innerHTML=`<div class="ov" data-act="backdrop" role="dialog" aria-modal="true">${h}</div>`;
+}
+
+function toMarkdown(r){
+  const all=itemsOf(r.id);const out=[`# ${r.name}`];if(r.summary)out.push('',r.summary);
+  LANES.forEach(l=>{const li=all.filter(i=>(i.lane||'later')===l.id).sort((a,b)=>(a.order||0)-(b.order||0));
+    out.push('',`## ${l.name}`);if(!li.length)out.push('_Nothing yet_');
+    li.forEach(i=>{const box=i.status==='shipped'?'[x]':'[ ]';const bits=[STATUS[i.status],i.quarter,i.theme].filter(Boolean).join(' · ');
+      out.push(`- ${box} **${i.title}**${bits?` (${bits})`:''}${i.detail?` — ${i.detail}`:''}`)})});
+  return out.join('\n');
+}
+
+let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
+
+/* ---------- actions ---------- */
+function nextOrder(filterFn){const l=S.items.filter(filterFn);return l.length?Math.max(...l.map(i=>i.order||0))+1:1}
+
+document.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-act]');
+  const card=e.target.closest('.card');
+  if(!el&&card){const it=S.items.find(i=>i.id===card.dataset.id);if(it)openModal({type:'item',key:'i'+it.id,item:{...it},isNew:false});return}
+  if(!el)return;
+  const a=el.dataset.act;
+  if(a==='backdrop'){if(e.target===el)closeModal();return}
+  if(a==='close'){closeModal();return}
+  if(a==='view'){S.view=el.dataset.v;ls('waypoint-view',S.view);render();return}
+  if(a==='present'){S.present=!S.present;render();return}
+  if(a==='theme'){S.theme=el.dataset.t||null;render();return}
+  if(a==='share'){openModal({type:'share',key:'share'+Date.now()});return}
+  if(a==='new-roadmap'){openModal({type:'roadmap',key:'nr'+Date.now(),roadmap:{name:'',summary:''},isNew:true});return}
+  if(a==='edit-roadmap'){const r=cur();if(r)openModal({type:'roadmap',key:'r'+r.id,roadmap:{...r},isNew:false});return}
+  if(a==='new-item'){
+    const r=cur();if(!r)return;
+    const lane=el.dataset.lane||(S.view==='board'?'later':'next');
+    const quarter=el.dataset.quarter!==undefined?el.dataset.quarter:'';
+    openModal({type:'item',key:'ni'+Date.now(),isNew:true,item:{id:newId('i'),roadmapId:r.id,title:'',detail:'',lane,status:'planned',theme:S.theme||'',quarter}});return}
+  if(a==='del-item'||a==='del-rm'){syncForm();S.modal.confirm=true;S.modal.dirty=true;renderModal();return}
+  if(a==='del-no'){syncForm();S.modal.confirm=false;S.modal.dirty=true;renderModal();return}
+  if(a==='del-item-yes'){const id=S.modal.item.id;closeModal();await del('items',id);toast('Item deleted');return}
+  if(a==='del-rm-yes'){
+    const id=S.modal.roadmap.id;closeModal();
+    for(const it of itemsOf(id))await del('items',it.id);
+    await del('roadmaps',id);S.current=null;pickCurrent();render();toast('Roadmap deleted');return}
+  if(a==='vote'){e.stopPropagation();vote(el.dataset.id);return}
+  if(a==='copy'){
+    const src=document.getElementById(el.dataset.src);
+    try{await navigator.clipboard.writeText(src.value);toast('Copied')}catch(err){src.focus();src.select();toast('Press Ctrl+C or ⌘C to copy the selected text')}
+    return}
+  if(a==='download'){
+    const r=cur();if(!r||!S.downloads)return;
+    try{await S.downloads.save({filename:(r.name||'roadmap').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-').toLowerCase()+'.md',data:toMarkdown(r)})}catch(err){if(err&&err.code==='unavailable'){S.downloads=null;S.modal.dirty=true;renderModal()}}
+    return}
+});
+document.addEventListener('change',e=>{if(e.target.id==='rm')setCurrent(e.target.value)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.modal)closeModal()});
+
+function syncForm(){ // keep typed values across re-render of the modal
+  const m=S.modal;if(!m)return;const f=$('#itemForm')||$('#rmForm');if(!f)return;
+  const fd=new FormData(f);const tgt=m.type==='item'?m.item:m.roadmap;for(const[k,v]of fd.entries())tgt[k]=v;
+}
+
+document.addEventListener('submit',async e=>{
+  e.preventDefault();const m=S.modal;if(!m)return;syncForm();
+  if(m.type==='item'){
+    const it=m.item;it.title=(it.title||'').trim();if(!it.title){toast('Give the item a title.');return}
+    const prev=S.items.find(i=>i.id===it.id);
+    if(!prev||prev.lane!==it.lane)it.order=nextOrder(i=>i.roadmapId===it.roadmapId&&i.lane===it.lane);
+    it.updatedAt=Date.now();it.theme=(it.theme||'').trim();it.quarter=(it.quarter||'').trim().replace(/^q/,'Q');
+    closeModal();await put('items',it.id,strip(it));toast(m.isNew?'Item added':'Saved');
+  }else if(m.type==='roadmap'){
+    const r=m.roadmap;r.name=(r.name||'').trim();if(!r.name){toast('Give the roadmap a name.');return}
+    if(m.isNew){r.id=newId('r');r.createdAt=Date.now()}
+    closeModal();await put('roadmaps',r.id,strip(r));if(m.isNew)setCurrent(r.id);toast(m.isNew?'Roadmap created':'Saved');
+  }
+});
+
+async function vote(id){
+  const had=S.myVotes.includes(id);const next=had?S.myVotes.filter(x=>x!==id):[...S.myVotes,id];
+  if(S.mode==='local'){S.myVotes=next;countVotesLocal();saveLocal();render();return}
+  if(!S.uid||!S.canWrite)return;
+  S.myVotes=next;S.voteCounts[id]=Math.max(0,(S.voteCounts[id]||0)+(had?-1:1));render();
+  try{await S.db.doc('votes/'+S.uid).set({items:next})}catch(e){onWriteErr(e)}
+}
+
+/* drag & drop between lanes / quarters */
+let dragId=null;
+document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('.card');if(!c||!editable())return;dragId=c.dataset.id;c.classList.add('dragging');try{e.dataTransfer.setData('text/plain',dragId);e.dataTransfer.effectAllowed='move'}catch(err){}});
+document.addEventListener('dragend',e=>{document.querySelectorAll('.dragging,.over').forEach(x=>x.classList.remove('dragging','over'));dragId=null});
+document.addEventListener('dragover',e=>{const l=e.target.closest&&e.target.closest('.lane');if(!l||!dragId)return;e.preventDefault();document.querySelectorAll('.lane.over').forEach(x=>x!==l&&x.classList.remove('over'));l.classList.add('over')});
+document.addEventListener('drop',async e=>{
+  const l=e.target.closest&&e.target.closest('.lane');if(!l||!dragId)return;e.preventDefault();
+  const it=S.items.find(i=>i.id===dragId);dragId=null;l.classList.remove('over');if(!it)return;
+  const upd={...it};
+  if(l.dataset.lane!==undefined){if(upd.lane===l.dataset.lane)return;upd.lane=l.dataset.lane;upd.order=nextOrder(i=>i.roadmapId===it.roadmapId&&i.lane===upd.lane)}
+  else if(l.dataset.quarter!==undefined){if((upd.quarter||'')===l.dataset.quarter)return;upd.quarter=l.dataset.quarter}
+  upd.updatedAt=Date.now();await put('items',upd.id,strip(upd));
+});
+
+S.view=ls('waypoint-view')==='timeline'?'timeline':'board';
+boot();
+</script>
