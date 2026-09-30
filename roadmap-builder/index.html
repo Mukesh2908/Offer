@@ -3,217 +3,270 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a route line of three stations (Now / Next / Later) heads a board of lanes; toolbar on top, summary before cards. */
+/* Layout: a vertical spine of topic blocks with subtopics branching left and right on a pannable dotted canvas; toolbar on top. */
 :root{
-  --bg:#F2F4F8; --surface:#FFFFFF; --sunk:#E8ECF3; --ink:#141A29; --muted:#5A6378; --line:#D8DEE8;
-  --accent:#2B55E6; --accent-ink:#FFFFFF; --accent-soft:#E3E9FD;
-  --now:#D2461A; --next:#2B55E6; --later:#6D7488;
-  --ok:#1E8A55; --ok-soft:#DDF3E7; --warn:#B7700A; --warn-soft:#FBEFD9; --danger:#C0322B; --danger-soft:#FBE3E1;
-  --shadow:0 1px 2px rgba(20,26,41,.06),0 4px 14px rgba(20,26,41,.05);
+  --bg:#F2F4F8; --canvas:#F7F8FB; --dot:#D5DBE6; --surface:#FFFFFF; --sunk:#E8ECF3; --ink:#141A29; --muted:#5A6378; --line:#D8DEE8;
+  --accent:#2B55E6; --accent-ink:#FFFFFF; --accent-soft:#E3E9FD; --wire:#9AA6BD;
+  --ok:#1E8A55; --ok-soft:#DDF3E7; --danger:#C0322B; --danger-soft:#FBE3E1;
+  --core:#F5C518; --core-soft:#FFF6D1; --good:#2B55E6; --optional:#9AA3B5;
+  --c1:#4F46E5; --c2:#0E8C7E; --c3:#D2461A; --c4:#B8327A; --c5:#7A4FD6; --c6:#2F7ABF;
+  --shadow:0 1px 2px rgba(20,26,41,.07),0 3px 10px rgba(20,26,41,.06);
   --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
   --f-body:"IBM Plex Sans","Segoe UI",system-ui,-apple-system,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0D111A; --surface:#151B27; --sunk:#1B2231; --ink:#E7EBF3; --muted:#98A1B6; --line:#262F41;
-  --accent:#7D9BFF; --accent-ink:#0D111A; --accent-soft:#1E2945;
-  --now:#FF875A; --next:#7D9BFF; --later:#A0A8BB;
-  --ok:#4CC98A; --ok-soft:#15301F; --warn:#F0AE45; --warn-soft:#352812; --danger:#FF7A72; --danger-soft:#3A1917;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}}
+  --bg:#0D111A; --canvas:#10151F; --dot:#232C3D; --surface:#171D2A; --sunk:#1D2433; --ink:#E7EBF3; --muted:#98A1B6; --line:#2A3346;
+  --accent:#7D9BFF; --accent-ink:#0D111A; --accent-soft:#1E2945; --wire:#4A5670;
+  --ok:#4CC98A; --ok-soft:#15301F; --danger:#FF7A72; --danger-soft:#3A1917;
+  --core:#F5C518; --core-soft:#3A3212; --good:#7D9BFF; --optional:#6C758A;
+  --c1:#8B85FF; --c2:#3CC7B5; --c3:#FF875A; --c4:#F06BB0; --c5:#A98BFF; --c6:#62A8EA;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0D111A; --surface:#151B27; --sunk:#1B2231; --ink:#E7EBF3; --muted:#98A1B6; --line:#262F41;
-  --accent:#7D9BFF; --accent-ink:#0D111A; --accent-soft:#1E2945;
-  --now:#FF875A; --next:#7D9BFF; --later:#A0A8BB;
-  --ok:#4CC98A; --ok-soft:#15301F; --warn:#F0AE45; --warn-soft:#352812; --danger:#FF7A72; --danger-soft:#3A1917;
-  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 14px rgba(0,0,0,.25); color-scheme:dark}
+  --bg:#0D111A; --canvas:#10151F; --dot:#232C3D; --surface:#171D2A; --sunk:#1D2433; --ink:#E7EBF3; --muted:#98A1B6; --line:#2A3346;
+  --accent:#7D9BFF; --accent-ink:#0D111A; --accent-soft:#1E2945; --wire:#4A5670;
+  --ok:#4CC98A; --ok-soft:#15301F; --danger:#FF7A72; --danger-soft:#3A1917;
+  --core:#F5C518; --core-soft:#3A3212; --good:#7D9BFF; --optional:#6C758A;
+  --c1:#8B85FF; --c2:#3CC7B5; --c3:#FF875A; --c4:#F06BB0; --c5:#A98BFF; --c6:#62A8EA;
+  --shadow:0 1px 2px rgba(0,0,0,.35),0 3px 10px rgba(0,0,0,.3); color-scheme:dark}
 
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);padding:0 16px;padding-block:0 48px}
-.wrap{max-width:1180px;margin:0 auto}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body);display:flex;flex-direction:column;overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
 
-/* top bar */
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding-block:14px;border-bottom:1px solid var(--line)}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg);flex:none}
 .brand{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:700;font-size:18px;margin-right:auto}
-.brand svg{flex:none}
-.pick{display:flex;align-items:center;gap:6px;min-width:0}
+.pick{display:flex;align-items:center;gap:4px;min-width:0}
 select,input,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
-select{max-width:220px}
+select{max-width:210px}
 .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;font-weight:500;font-size:14px;white-space:nowrap}
 .btn:hover{border-color:var(--muted)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn.primary:hover{filter:brightness(1.07)}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
 .btn.ghost:hover{color:var(--ink);background:var(--sunk)}
 .btn.danger{color:var(--danger);border-color:var(--danger-soft);background:var(--danger-soft)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .seg{display:inline-flex;background:var(--sunk);border-radius:9px;padding:3px;gap:2px}
 .seg button{border:0;background:transparent;padding:5px 12px;border-radius:7px;font-size:14px;font-weight:500;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 
-.note{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--ink);font-size:14px}
-.note b{color:var(--warn)}
+.sub{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:14px 16px 12px;border-bottom:1px solid var(--line);flex:none}
+.sub h1{font-size:clamp(22px,3.2vw,30px);font-weight:700}
+.sub .desc{color:var(--muted);font-size:14px;margin-top:2px;max-width:70ch}
+.sub .grow{flex:1 1 320px;min-width:0}
+.prog{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.prog .track{width:140px;height:7px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.prog .track i{display:block;height:100%;background:var(--ok);border-radius:inherit;transition:width .3s}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:10px;border-radius:3px;border:2px solid var(--line);background:var(--surface)}
+.sw.core{border-color:var(--core);background:var(--core-soft)}
+.sw.good{border-color:var(--good)}
+.sw.optional{border-style:dashed;border-color:var(--optional)}
+.sw.done{border-color:var(--ok);background:var(--ok-soft)}
+.note{margin:10px 16px 0;padding:9px 12px;border-radius:8px;background:var(--sunk);font-size:13.5px;flex:none}
 
-/* summary */
-.head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;padding-block:28px 18px}
-.head h1{font-size:clamp(28px,4.5vw,44px);font-weight:700;letter-spacing:-.01em}
-.head p{margin:8px 0 0;color:var(--muted);max-width:62ch}
-.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.stats{display:flex;gap:22px;align-items:flex-end}
-.stat b{display:block;font-family:var(--f-display);font-size:26px;font-variant-numeric:tabular-nums;line-height:1}
-.stat span{font-size:12px;color:var(--muted);font-family:var(--f-mono);text-transform:uppercase;letter-spacing:.06em}
-.progress{height:6px;border-radius:99px;background:var(--sunk);overflow:hidden;margin-top:8px;width:160px}
-.progress i{display:block;height:100%;background:var(--ok);border-radius:inherit}
+/* canvas */
+.viewport{position:relative;flex:1;min-height:0;overflow:hidden;background-color:var(--canvas);background-image:radial-gradient(var(--dot) 1.2px,transparent 1.3px);background-size:22px 22px;touch-action:none;cursor:grab}
+.viewport.panning{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;transform-origin:0 0}
+.stage svg{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.wire{fill:none;stroke:var(--wire);stroke-width:2}
+.wire.spine{stroke-width:3;stroke-dasharray:2 7;stroke-linecap:round}
+.wire.done{stroke:var(--ok)}
+.node{position:absolute;transform:translate(-50%,-50%);border-radius:10px;background:var(--surface);border:2px solid var(--line);box-shadow:var(--shadow);padding:8px 12px;text-align:center;font-size:14px;font-weight:500;line-height:1.3;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:center;gap:6px}
+.node:hover{filter:brightness(.98);box-shadow:0 0 0 3px var(--accent-soft),var(--shadow)}
+.node .t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.sec{background:var(--c);border-color:var(--c);color:#fff;font-family:var(--f-display);font-weight:700;font-size:17px;padding:12px 16px}
+.sec .n{font-family:var(--f-mono);font-weight:500;font-size:11.5px;opacity:.85;background:rgba(255,255,255,.18);border-radius:99px;padding:1px 7px}
+.kid.core{border-color:var(--core);background:var(--core-soft)}
+.kid.good{border-color:var(--good)}
+.kid.optional{border-style:dashed;border-color:var(--optional);color:var(--muted)}
+.kid.done{border-color:var(--ok);background:var(--ok-soft);color:var(--ink)}
+.kid .ck{flex:none;width:16px;height:16px;border-radius:50%;border:2px solid var(--wire);display:inline-grid;place-items:center;font-size:10px;line-height:1}
+.kid.done .ck{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.kid .lk{flex:none;font-size:11px;color:var(--muted);font-family:var(--f-mono)}
+.addnode{border-style:dashed;background:transparent;box-shadow:none;color:var(--muted);font-size:13px}
+.title-node{background:var(--ink);color:var(--bg);border-color:var(--ink);font-family:var(--f-display);font-weight:700;font-size:20px;padding:12px 20px;border-radius:12px}
 
-.filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding-bottom:16px}
-.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:3px 11px;font-size:13px;color:var(--muted)}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.filters .lbl{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:4px}
+.zoom{position:absolute;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;z-index:2}
+.zoom button{width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);font-size:17px;font-weight:600}
+.hint{position:absolute;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:5px 9px;z-index:2}
 
-/* route line */
-.route{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:6px}
-.route::before{content:"";position:absolute;left:8px;right:8px;top:8px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--now),var(--next) 50%,var(--later))}
-.stop{position:relative;display:flex;align-items:center;gap:8px;padding-top:0}
-.stop i{width:19px;height:19px;border-radius:50%;background:var(--bg);border:4px solid var(--c);flex:none;position:relative;z-index:1}
+/* list view */
+.list{flex:1;min-height:0;overflow-y:auto;padding:18px 16px 60px}
+.list .inner{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.lsec h2{font-size:19px;display:flex;align-items:center;gap:10px}
+.lsec h2::before{content:"";width:12px;height:12px;border-radius:4px;background:var(--c)}
+.lsec h2 small{font-family:var(--f-mono);font-size:12px;color:var(--muted);font-weight:400}
+.lsec ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.lrow{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:8px 12px}
+.lrow input{width:18px;height:18px;accent-color:var(--ok);flex:none}
+.lrow .tt{flex:1;min-width:0;overflow-wrap:anywhere;cursor:pointer}
+.lrow.done .tt{text-decoration:line-through;color:var(--muted)}
+.tag{font-size:11.5px;font-family:var(--f-mono);border-radius:99px;padding:1px 8px;white-space:nowrap}
+.tag.core{background:var(--core-soft);color:var(--ink);border:1px solid var(--core)}
+.tag.optional{color:var(--muted);border:1px dashed var(--optional)}
 
-/* board */
-.board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
-.scroller{overflow-x:auto;padding-bottom:8px}
-.board.tl{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr)}
-.lane{background:var(--sunk);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0;border:2px dashed transparent;transition:border-color .15s}
-.lane.over{border-color:var(--c,var(--accent))}
-.lane-h{display:flex;align-items:baseline;gap:8px;padding:2px 2px 4px}
-.lane-h h2{font-size:18px;font-weight:700;color:var(--c,var(--ink))}
-.lane-h small{color:var(--muted);font-size:13px}
-.lane-h .n{margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);text-align:left;width:100%;min-width:0}
-.card[draggable="true"]{cursor:grab}
-.card.dragging{opacity:.45}
-.card h3{font-family:var(--f-body);font-size:15px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
-.card p{margin:0;color:var(--muted);font-size:13.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
-.card .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
-.theme{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);letter-spacing:.03em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.pill{font-size:12px;font-weight:600;border-radius:99px;padding:2px 9px;white-space:nowrap}
-.pill.planned{background:var(--sunk);color:var(--muted)}
-.pill.building{background:var(--warn-soft);color:var(--warn)}
-.pill.shipped{background:var(--ok-soft);color:var(--ok)}
-.q{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
-.vote{margin-left:auto;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:transparent;border-radius:7px;padding:2px 8px;font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
-.vote[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
-.vote:disabled{cursor:default;opacity:.8}
-.add{border:1px dashed var(--line);background:transparent;border-radius:10px;padding:9px;color:var(--muted);font-size:14px;font-weight:500}
-.add:hover{color:var(--ink);border-color:var(--muted)}
-.lane .empty{color:var(--muted);font-size:13px;padding:6px 2px}
+.empty{flex:1;display:grid;place-items:center;padding:40px 16px;text-align:center}
+.empty div{max-width:520px}
+.empty h1{font-size:32px;margin-bottom:10px}
+.empty p{color:var(--muted);margin:0 0 20px}
+.empty .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-/* empty state */
-.hero-empty{padding-block:64px;max-width:560px}
-.hero-empty h1{font-size:34px;margin-bottom:10px}
-.hero-empty p{color:var(--muted);margin:0 0 20px}
-
-/* overlay */
+/* dialogs */
 .ov{position:fixed;inset:0;z-index:20;background:rgba(10,14,22,.45);display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) 16px 24px;overflow-y:auto}
-.panel{background:var(--surface);border-radius:14px;width:100%;max-width:520px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);border:1px solid var(--line)}
+.panel{background:var(--surface);border-radius:14px;width:100%;max-width:540px;padding:22px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 60px rgba(0,0,0,.25);border:1px solid var(--line)}
 .panel h2{font-size:22px}
+.panel .lead{margin:0;color:var(--muted);font-size:14px;white-space:pre-wrap}
 .field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:13px;font-weight:600;color:var(--muted)}
-.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
-textarea{resize:vertical;min-height:84px}
+.field label,.field .lbl{font-size:13px;font-weight:600;color:var(--muted)}
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+textarea{resize:vertical;min-height:80px}
 .actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-top:4px}
 .actions .sp{flex:1}
 .confirm{background:var(--danger-soft);border-radius:10px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .confirm span{flex:1 1 180px;font-size:14px}
+.links{display:flex;flex-direction:column;gap:6px}
+.links a{color:var(--accent);overflow-wrap:anywhere;font-size:14px}
+.colors{display:flex;gap:8px;flex-wrap:wrap}
+.colors label{position:relative}
+.colors input{position:absolute;opacity:0;inset:0}
+.colors span{display:block;width:28px;height:28px;border-radius:8px;background:var(--c);border:3px solid transparent}
+.colors input:checked+span{border-color:var(--ink)}
+.colors input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
 .share-step{display:flex;flex-direction:column;gap:6px}
 .share-step h3{font-family:var(--f-body);font-size:14px;font-weight:600}
 .share-step p{margin:0;color:var(--muted);font-size:14px}
 .copyrow{display:flex;gap:8px}
 .copyrow input{flex:1;font-family:var(--f-mono);font-size:13px}
-.md{font-family:var(--f-mono);font-size:12.5px;min-height:150px;width:100%}
-
+.mono{font-family:var(--f-mono);font-size:12.5px;min-height:170px;width:100%}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:9px;font-size:14px;z-index:30;max-width:calc(100% - 32px)}
-
-body.present .edit-only{display:none!important}
-body.present .head h1{font-size:clamp(32px,5.5vw,56px)}
-
-@media (max-width:760px){
-  .head{grid-template-columns:1fr}
-  .board:not(.tl){grid-template-columns:1fr}
-  .route{display:none}
-  .lane-h h2::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:8px;vertical-align:middle}
-}
+@media (max-width:640px){.legend{display:none}.hint{display:none}.prog .track{width:90px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
-<div class="wrap">
-  <header class="bar">
-    <div class="brand">
-      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 17 C8 17 8 5 13 5 S19 11 19 11" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round"/><circle cx="3" cy="17" r="2.6" fill="var(--now)"/><circle cx="19" cy="11" r="2.6" fill="var(--later)"/></svg>
-      Waypoint
-    </div>
-    <div class="pick" id="pick"></div>
-    <div class="seg" role="group" aria-label="View">
-      <button id="v-board" data-act="view" data-v="board">Board</button>
-      <button id="v-tl" data-act="view" data-v="timeline">Timeline</button>
-    </div>
-    <button class="btn" data-act="present" id="presentBtn">Present</button>
-    <button class="btn primary" data-act="share">Share</button>
-  </header>
-  <div id="notice"></div>
-  <main id="main"></main>
-</div>
+<header class="bar">
+  <div class="brand">
+    <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2v18" stroke="var(--wire)" stroke-width="2" stroke-dasharray="2 4" stroke-linecap="round"/><path d="M11 7 C15 7 15 5 19 5 M11 15 C7 15 7 17 3 17" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round"/><circle cx="11" cy="7" r="3" fill="var(--c3)"/><circle cx="11" cy="15" r="3" fill="var(--c1)"/></svg>
+    Waypoint
+  </div>
+  <div class="pick" id="pick"></div>
+  <div class="seg" role="group" aria-label="View">
+    <button id="v-map" data-act="view" data-v="map">Map</button>
+    <button id="v-list" data-act="view" data-v="list">Checklist</button>
+  </div>
+  <button class="btn" data-act="edit" id="editBtn" hidden>Edit</button>
+  <button class="btn primary" data-act="share">Share</button>
+</header>
+<div id="subhead"></div>
+<div id="notice"></div>
+<div id="main" style="flex:1;min-height:0;display:flex;flex-direction:column"></div>
 <div id="overlay"></div>
 <div id="toast" class="toast" hidden></div>
 
 <script>
-const LANES=[{id:'now',name:'Now',hint:'Being built'},{id:'next',name:'Next',hint:'Up after this'},{id:'later',name:'Later',hint:'On the horizon'}];
-const STATUS={planned:'Planned',building:'In progress',shipped:'Shipped'};
-const S={mode:'loading',roadmaps:[],items:[],voteCounts:{},myVotes:[],current:null,view:'board',present:false,theme:null,
-  canWrite:true,uid:null,db:null,downloads:null,ready:{r:false,i:false},modal:null,readOnlyNotice:false};
+const COLORS=['c1','c2','c3','c4','c5','c6'];
+const LEVELS={core:'Must know',good:'Good to know',optional:'Optional'};
+const S={mode:'loading',maps:[],current:null,view:'map',editing:false,canWrite:true,uid:null,db:null,downloads:null,
+  ready:false,done:{},modal:null,cam:null};
 
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const newId=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+const safeUrl=u=>/^https?:\/\//i.test((u||'').trim())?u.trim():'';
 
-/* ---------- storage: shared db when available, this browser otherwise ---------- */
-function sampleData(){
-  const r='rexample';const t=Date.now();
-  const it=(title,detail,lane,status,theme,quarter,o)=>({id:newId('i'),roadmapId:r,title,detail,lane,status,theme,quarter,order:o,updatedAt:t});
-  return{roadmaps:[{id:r,name:'Example: Team Wiki Launch',summary:'Example roadmap to show how Waypoint works. Edit it or make your own.',createdAt:t}],
-    items:[it('Page editor with slash commands','Rich text editor with headings, checklists and code blocks.','now','building','Editor','Q4 2026',1),
-      it('Sign in with Google','Single sign-on for the whole workspace.','now','shipped','Accounts','Q4 2026',2),
-      it('Full-text search','Search across every page, with filters by space and author.','next','planned','Search','Q1 2027',1),
-      it('Page history','See and restore earlier versions of a page.','next','planned','Editor','Q1 2027',2),
-      it('Public help center','Publish chosen spaces as a public site.','later','planned','Publishing','Q2 2027',1)]};
+/* ---------- outline import / export ---------- */
+// Format: "# Title", then one line per topic, indented "- " lines for subtopics.
+// Subtopic suffixes: "!" = must know, "?" = optional; "| https://…" adds a link.
+function parseOutline(text){
+  const lines=text.split(/\r?\n/);let name='',summary='';const sections=[];let cur=null;
+  for(const raw of lines){
+    if(!raw.trim())continue;
+    const m=/^#\s+(.*)/.exec(raw.trim());
+    if(m&&!name){name=m[1].trim();continue}
+    if(/^>\s*/.test(raw.trim())&&!sections.length){summary=raw.trim().replace(/^>\s*/,'');continue}
+    const indented=/^(\s+|[-*+]\s)/.test(raw)&&cur;
+    let t=raw.trim().replace(/^[-*+]\s+/,'').replace(/^\[[ xX]\]\s*/,'').replace(/^#+\s*/,'').replace(/^\d+[.)]\s+/,'');
+    if(!indented){cur={id:newId('s'),title:t,color:COLORS[sections.length%COLORS.length],children:[]};sections.push(cur);continue}
+    let url='';const pi=t.indexOf('|');if(pi>=0){url=safeUrl(t.slice(pi+1));t=t.slice(0,pi).trim()}
+    let level='good';if(/!\s*$/.test(t)){level='core';t=t.replace(/!\s*$/,'').trim()}else if(/\?\s*$/.test(t)){level='optional';t=t.replace(/\?\s*$/,'').trim()}
+    cur.children.push({id:newId('k'),title:t,level,note:'',links:url?[{label:'',url}]:[]});
+  }
+  return{name:name||'Untitled roadmap',summary,sections};
 }
-function saveLocal(){ls('waypoint-local',JSON.stringify({roadmaps:S.roadmaps,items:S.items,myVotes:S.myVotes}))}
+function toOutline(m){
+  const out=['# '+m.name];if(m.summary)out.push('> '+m.summary);
+  m.sections.forEach(s=>{out.push('',s.title);s.children.forEach(k=>{
+    const suf=k.level==='core'?' !':k.level==='optional'?' ?':'';const u=(k.links&&k.links[0]&&k.links[0].url)?' | '+k.links[0].url:'';
+    out.push('  - '+k.title+suf+u)})});
+  return out.join('\n');
+}
+function toMarkdown(m){
+  const d=doneSet(m.id);const out=['# '+m.name];if(m.summary)out.push('',m.summary);
+  m.sections.forEach((s,i)=>{out.push('',`## ${i+1}. ${s.title}`);s.children.forEach(k=>{
+    const tag=k.level==='core'?' **(must know)**':k.level==='optional'?' _(optional)_':'';
+    const links=(k.links||[]).filter(l=>safeUrl(l.url)).map(l=>`[${l.label||'link'}](${l.url})`).join(', ');
+    out.push(`- [${d.has(k.id)?'x':' '}] ${k.title}${tag}${links?' — '+links:''}`)})});
+  return out.join('\n');
+}
+
+const SAMPLE=`# Example: Learn Git
+> Example roadmap. Edit it, or start your own from the menu.
+Basics
+  - What version control is !
+  - Install and configure Git !
+  - init, add, commit !
+  - Reading git log
+Branching
+  - Create and switch branches !
+  - Merging !
+  - Resolving conflicts !
+  - Rebasing ?
+Remotes
+  - Clone, push, pull !
+  - Pull requests
+  - Forks ?`;
+
+/* ---------- storage ---------- */
+function saveLocal(){ls('waypoint-maps',JSON.stringify({maps:S.maps,done:S.done}))}
 function startLocal(){
-  S.mode='local';let d=null;try{d=JSON.parse(ls('waypoint-local')||'null')}catch(e){}
-  if(!d||!d.roadmaps)d=sampleData();
-  S.roadmaps=d.roadmaps;S.items=d.items||[];S.myVotes=d.myVotes||[];countVotesLocal();
-  S.ready={r:true,i:true};pickCurrent();render();
+  S.mode='local';let d=null;try{d=JSON.parse(ls('waypoint-maps')||'null')}catch(e){}
+  if(!d||!Array.isArray(d.maps)){const m=parseOutline(SAMPLE);d={maps:[{id:'mexample',createdAt:Date.now(),...m}],done:{}}}
+  S.maps=d.maps;S.done=d.done||{};S.ready=true;pickCurrent();render();
 }
-function countVotesLocal(){S.voteCounts={};S.myVotes.forEach(id=>S.voteCounts[id]=1)}
-
 function onWriteErr(e){
-  const code=e&&e.code;
-  if(code==='invalid_argument'||code==='not_granted'||code==='revoked'){S.canWrite=false;S.readOnlyNotice=true;render();toast('You can view this roadmap but not change it.')}
-  else if(code==='quota_exceeded')toast('Storage is full. Delete some items or roadmaps, then try again.');
-  else if(code==='resource_exhausted')toast('Too many changes at once. Wait a moment and try again.');
+  const c=e&&e.code;
+  if(c==='invalid_argument'||c==='not_granted'||c==='revoked'){S.canWrite=false;S.editing=false;render();toast('You can view this roadmap but not change it.')}
+  else if(c==='quota_exceeded')toast('Storage is full. Delete a roadmap, then try again.');
+  else if(c==='resource_exhausted')toast('Too many changes at once. Wait a moment and try again.');
   else toast('That change did not save. Check your connection and try again.');
 }
-async function put(coll,id,data){
-  if(S.mode==='db'){try{await S.db.collection(coll).doc(id).set(data)}catch(e){onWriteErr(e)}return}
-  const arr=coll==='roadmaps'?S.roadmaps:S.items;const i=arr.findIndex(x=>x.id===id);
-  const row={id,...data};if(i<0)arr.push(row);else arr[i]=row;saveLocal();render();
+async function saveMap(m){
+  m.updatedAt=Date.now();
+  const i=S.maps.findIndex(x=>x.id===m.id);if(i<0)S.maps.push(m);else S.maps[i]=m;
+  if(S.mode==='db'){render();const{id,...body}=m;try{await S.db.collection('maps').doc(id).set(JSON.parse(JSON.stringify(body)))}catch(e){onWriteErr(e)}}
+  else{saveLocal();render()}
 }
-async function del(coll,id){
-  if(S.mode==='db'){try{await S.db.collection(coll).doc(id).delete()}catch(e){onWriteErr(e)}return}
-  const arr=coll==='roadmaps'?S.roadmaps:S.items;const i=arr.findIndex(x=>x.id===id);if(i>=0)arr.splice(i,1);saveLocal();render();
+async function deleteMap(id){
+  S.maps=S.maps.filter(x=>x.id!==id);
+  if(S.mode==='db'){try{await S.db.collection('maps').doc(id).delete()}catch(e){onWriteErr(e)}}else saveLocal();
+  S.current=null;pickCurrent();render();
 }
-function strip(o){const{id,...rest}=o;return rest}
+function doneSet(mapId){return new Set(S.done[mapId]||[])}
+async function toggleDone(kidId){
+  const m=cur();if(!m)return;const set=doneSet(m.id);set.has(kidId)?set.delete(kidId):set.add(kidId);
+  S.done[m.id]=[...set];render();
+  if(S.mode==='db'){
+    if(!S.uid){toast('Sign in to save your progress.');return}
+    try{await S.db.collection('data/users/'+S.uid).doc('progress').set({done:S.done})}catch(e){toast('Your progress did not save. Try again.')}
+  }else saveLocal();
+}
 
 async function boot(){
   render();
@@ -224,263 +277,270 @@ async function boot(){
   const user=await c.use('user').catch(()=>null);
   if(user){try{S.uid=await user.id()}catch(e){}try{if(await user.can('data.write')===false)S.canWrite=false}catch(e){}}
   c.use('downloads').then(d=>{S.downloads=d}).catch(()=>{});
-  const fail=e=>{if(e&&(e.code==='revoked'||e.code==='not_granted')){S.canWrite=false}S.ready={r:true,i:true};render()};
-  db.collection('roadmaps').onSnapshot(s=>{S.roadmaps=s.docs.map(d=>({id:d.id,...d.data()}));S.ready.r=true;pickCurrent();render()},fail);
-  db.collection('items').onSnapshot(s=>{S.items=s.docs.map(d=>({id:d.id,...d.data()}));S.ready.i=true;render()},fail);
-  db.collection('votes').onSnapshot(s=>{
-    const counts={};let mine=[];
-    s.docs.forEach(d=>{const ids=(d.data().items)||[];ids.forEach(id=>counts[id]=(counts[id]||0)+1);if(d.id===S.uid)mine=ids.slice()});
-    S.voteCounts=counts;S.myVotes=mine;render();
-  },()=>{});
+  db.collection('maps').onSnapshot(s=>{S.maps=s.docs.map(d=>({id:d.id,...d.data()}));S.ready=true;pickCurrent();render()},
+    e=>{S.ready=true;if(e&&(e.code==='revoked'||e.code==='not_granted'))S.canWrite=false;render()});
+  if(S.uid)db.doc('data/users/'+S.uid+'/progress').get().then(snap=>{if(snap.exists){S.done=(snap.data().done)||{};render()}}).catch(()=>{});
 }
 
 /* ---------- selection ---------- */
-function sortedRoadmaps(){return S.roadmaps.slice().sort((a,b)=>(a.createdAt||0)-(b.createdAt||0))}
+const sortedMaps=()=>S.maps.slice().sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+const cur=()=>S.maps.find(m=>m.id===S.current);
 function pickCurrent(){
   const h=(location.hash||'').slice(1);
-  if(h&&S.roadmaps.some(r=>r.id===h)){S.current=h;return}
-  if(S.current&&S.roadmaps.some(r=>r.id===S.current))return;
+  if(h&&S.maps.some(m=>m.id===h)){if(S.current!==h){S.current=h;S.cam=null}return}
+  if(S.current&&S.maps.some(m=>m.id===S.current))return;
   const saved=ls('waypoint-current');
-  S.current=(saved&&S.roadmaps.some(r=>r.id===saved))?saved:(sortedRoadmaps()[0]||{}).id||null;
+  S.current=(saved&&S.maps.some(m=>m.id===saved))?saved:(sortedMaps()[0]||{}).id||null;S.cam=null;
 }
-function setCurrent(id){S.current=id;S.theme=null;ls('waypoint-current',id);try{history.replaceState(null,'','#'+id)}catch(e){location.hash=id}render()}
+function setCurrent(id){S.current=id;S.cam=null;ls('waypoint-current',id);try{history.replaceState(null,'','#'+id)}catch(e){location.hash=id}render()}
 window.addEventListener('hashchange',()=>{pickCurrent();render()});
-const cur=()=>S.roadmaps.find(r=>r.id===S.current);
-const itemsOf=id=>S.items.filter(i=>i.roadmapId===id);
+
+/* ---------- layout ---------- */
+const G={secW:230,kidW:210,row:58,gap:84,secGap:56,top:130};
+function layout(m){
+  const X0=G.secW/2+G.gap+G.kidW/2;const W=2*(X0+G.kidW/2)+80;const cx=W/2;
+  const nodes=[],wires=[];let y=G.top;
+  nodes.push({type:'title',x:cx,y:50,w:Math.min(W-40,520),label:m.name});
+  let prevY=50;
+  m.sections.forEach((s,si)=>{
+    const kids=s.children.slice();if(S.editing)kids.push({add:true,id:'add-'+s.id});
+    const R=kids.filter((_,i)=>i%2===0),L=kids.filter((_,i)=>i%2===1);
+    const n=Math.max(1,R.length,L.length);const h=n*G.row;const sy=y+h/2;
+    wires.push({spine:true,d:`M${cx} ${prevY} L${cx} ${sy}`});prevY=sy;
+    nodes.push({type:'sec',x:cx,y:sy,w:G.secW,s,si});
+    [[R,1],[L,-1]].forEach(([arr,dir])=>arr.forEach((k,j)=>{
+      const ky=sy-(arr.length*G.row)/2+j*G.row+G.row/2;const kx=cx+dir*X0;
+      const x1=cx+dir*G.secW/2,x2=kx-dir*G.kidW/2,mx=(x1+x2)/2;
+      wires.push({d:`M${x1} ${sy} C${mx} ${sy} ${mx} ${ky} ${x2} ${ky}`,kid:k.id});
+      nodes.push({type:k.add?'add':'kid',x:kx,y:ky,w:G.kidW,k,s});
+    }));
+    y+=h+G.secGap;
+  });
+  if(S.editing){const ay=y+10;wires.push({spine:true,d:`M${cx} ${prevY} L${cx} ${ay}`});nodes.push({type:'addsec',x:cx,y:ay,w:G.secW});y=ay+40}
+  return{nodes,wires,W,H:y+60};
+}
 
 /* ---------- render ---------- */
-function qKey(q){const m=/^Q([1-4])\s*(\d{4})$/i.exec((q||'').trim());return m?(+m[2])*10+(+m[1]):null}
-function upcomingQuarters(){const d=new Date();let y=d.getFullYear(),q=Math.floor(d.getMonth()/3)+1;const out=[];for(let k=0;k<8;k++){out.push('Q'+q+' '+y);q++;if(q>4){q=1;y++}}return out}
-function editable(){return S.canWrite&&!S.present}
-
-function cardHTML(it){
-  const n=S.voteCounts[it.id]||0,mine=S.myVotes.includes(it.id);
-  const canVote=S.mode==='local'||(S.uid&&S.canWrite);
-  return `<article class="card" ${editable()?'draggable="true"':''} data-id="${esc(it.id)}">
-    <div class="top"><span class="theme">${esc(it.theme||'')}</span></div>
-    <h3>${esc(it.title)}</h3>
-    ${it.detail?`<p>${esc(it.detail)}</p>`:''}
-    <div class="meta"><span class="pill ${esc(it.status)}">${esc(STATUS[it.status]||'Planned')}</span>
-      ${it.quarter&&S.view==='board'?`<span class="q">${esc(it.quarter)}</span>`:''}
-      ${S.view==='timeline'?`<span class="q">${esc((LANES.find(l=>l.id===it.lane)||{}).name||'')}</span>`:''}
-      <button class="vote" data-act="vote" data-id="${esc(it.id)}" aria-pressed="${mine}" ${canVote?'':'disabled'} title="${canVote?(mine?'Remove your vote':'Vote for this'):'Votes'}" aria-label="${n} votes">▲ ${n}</button></div>
-  </article>`;
-}
-function laneHTML(key,title,hint,color,list,dropAttr){
-  const sorted=list.slice().sort((a,b)=>(a.order||0)-(b.order||0));
-  return `<section class="lane" style="--c:${color}" ${dropAttr}>
-    <div class="lane-h"><h2>${esc(title)}</h2>${hint?`<small>${esc(hint)}</small>`:''}<span class="n">${list.length}</span></div>
-    ${sorted.map(cardHTML).join('')||`<div class="empty">Nothing here yet.</div>`}
-    ${editable()?`<button class="add edit-only" data-act="new-item" ${dropAttr}>+ Add item</button>`:''}
-  </section>`;
-}
-
 function render(){
-  document.body.classList.toggle('present',S.present);
-  $('#presentBtn').textContent=S.present?'Exit present':'Present';
-  $('#v-board').setAttribute('aria-pressed',S.view==='board');
-  $('#v-tl').setAttribute('aria-pressed',S.view==='timeline');
+  $('#v-map').setAttribute('aria-pressed',S.view==='map');
+  $('#v-list').setAttribute('aria-pressed',S.view==='list');
+  const eb=$('#editBtn');eb.hidden=!(S.canWrite&&cur());eb.setAttribute('aria-pressed',S.editing);eb.textContent=S.editing?'Done editing':'Edit';
 
-  // picker
-  const rs=sortedRoadmaps();
-  $('#pick').innerHTML=rs.length?`<label for="rm" class="sr" hidden>Roadmap</label><select id="rm" data-act="pick" aria-label="Roadmap">${rs.map(r=>`<option value="${esc(r.id)}" ${r.id===S.current?'selected':''}>${esc(r.name)}</option>`).join('')}</select>
-    ${editable()?`<button class="btn ghost edit-only" data-act="edit-roadmap" title="Rename or delete">Edit</button><button class="btn ghost edit-only" data-act="new-roadmap">+ New</button>`:''}`:'';
+  const ms=sortedMaps();
+  $('#pick').innerHTML=ms.length?`<select id="rm" aria-label="Roadmap">${ms.map(m=>`<option value="${esc(m.id)}" ${m.id===S.current?'selected':''}>${esc(m.name)}</option>`).join('')}</select>
+    ${S.canWrite?`<button class="btn ghost" data-act="new-map">+ New</button>`:''}`:'';
 
-  // notices
   const notes=[];
-  if(S.mode==='local')notes.push('<b>Saved in this browser only.</b> Open this page on claude.ai while signed in to share roadmaps with your team.');
-  if(S.mode==='db'&&!S.canWrite)notes.push('<b>View only.</b> Ask the owner for Contributor access to edit or vote.');
+  if(S.mode==='local')notes.push('<b>Saved in this browser only.</b> Open this page on claude.ai while signed in to share roadmaps.');
+  if(S.mode==='db'&&!S.canWrite)notes.push('<b>View only.</b> You can tick off topics to track your own progress. Ask the owner for Contributor access to edit.');
   $('#notice').innerHTML=notes.map(n=>`<div class="note">${n}</div>`).join('');
 
-  const main=$('#main');
-  if(S.mode==='loading'||(S.mode==='db'&&!(S.ready.r&&S.ready.i))){main.innerHTML=`<div class="hero-empty"><div class="eyebrow">Loading</div><h1>Opening your roadmaps…</h1></div>`;return}
-  const r=cur();
-  if(!r){
-    main.innerHTML=`<div class="hero-empty"><div class="eyebrow">No roadmaps yet</div><h1>Plan what ships now, next and later.</h1>
-      <p>Create a roadmap, add items to each lane, then share the page so your team and customers can follow along and vote.</p>
-      ${S.canWrite?`<button class="btn primary" data-act="new-roadmap">Create your first roadmap</button>`:`<p>No roadmaps have been shared here yet.</p>`}</div>`;
+  const main=$('#main');const m=cur();
+  if(!S.ready){$('#subhead').innerHTML='';main.innerHTML=`<div class="empty"><div><h1>Opening your roadmaps…</h1></div></div>`;return}
+  if(!m){
+    $('#subhead').innerHTML='';
+    main.innerHTML=`<div class="empty"><div><h1>Map out what to learn, step by step.</h1>
+      <p>Build a visual roadmap of topics and subtopics, mark what matters most, attach resources, and share it. Everyone who opens it can tick off their own progress.</p>
+      ${S.canWrite?`<div class="row"><button class="btn primary" data-act="new-map">Create a roadmap</button><button class="btn" data-act="import">Paste an outline</button></div>`:'<p>No roadmaps have been shared here yet.</p>'}</div></div>`;
     return;
   }
-  const all=itemsOf(r.id);
-  const themes=[...new Set(all.map(i=>i.theme).filter(Boolean))].sort();
-  if(S.theme&&!themes.includes(S.theme))S.theme=null;
-  const list=S.theme?all.filter(i=>i.theme===S.theme):all;
-  const shipped=all.filter(i=>i.status==='shipped').length,building=all.filter(i=>i.status==='building').length;
-  const pct=all.length?Math.round(shipped/all.length*100):0;
+  const d=doneSet(m.id);const total=m.sections.reduce((a,s)=>a+s.children.length,0);
+  const got=m.sections.reduce((a,s)=>a+s.children.filter(k=>d.has(k.id)).length,0);const pct=total?Math.round(got/total*100):0;
+  $('#subhead').innerHTML=`<div class="sub"><div class="grow"><h1>${esc(m.name)}</h1>${m.summary?`<div class="desc">${esc(m.summary)}</div>`:''}</div>
+    <div class="prog" title="Your progress"><div class="track"><i style="width:${pct}%"></i></div>${got}/${total} done · ${pct}%</div>
+    <div class="legend"><span><i class="sw core"></i>Must know</span><span><i class="sw good"></i>Good to know</span><span><i class="sw optional"></i>Optional</span><span><i class="sw done"></i>Done</span></div>
+    ${S.editing?`<button class="btn" data-act="edit-map">Rename or delete</button>`:''}</div>`;
 
-  let body;
-  if(S.view==='board'){
-    body=`<div class="route" aria-hidden="true">${LANES.map(l=>`<div class="stop" style="--c:var(--${l.id})"><i></i></div>`).join('')}</div>
-    <div class="board">${LANES.map(l=>laneHTML(l.id,l.name,l.hint,`var(--${l.id})`,list.filter(i=>(i.lane||'later')===l.id),`data-lane="${l.id}"`)).join('')}</div>`;
-  }else{
-    const qs=[...new Set(list.map(i=>(i.quarter||'').trim()).filter(Boolean))];
-    qs.sort((a,b)=>{const ka=qKey(a),kb=qKey(b);if(ka!=null&&kb!=null)return ka-kb;if(ka!=null)return -1;if(kb!=null)return 1;return a.localeCompare(b)});
-    const cols=qs.map(q=>laneHTML(q,q,'','var(--accent)',list.filter(i=>(i.quarter||'').trim()===q),`data-quarter="${esc(q)}"`));
-    const un=list.filter(i=>!(i.quarter||'').trim());
-    if(un.length||!qs.length)cols.push(laneHTML('','Unscheduled','No quarter set','var(--later)',un,'data-quarter=""'));
-    body=`<div class="scroller"><div class="board tl">${cols.join('')}</div></div>`;
+  if(S.view==='list'){
+    main.innerHTML=`<div class="list"><div class="inner">${m.sections.map((s,i)=>`<section class="lsec" style="--c:var(--${s.color||'c1'})">
+      <h2>${i+1}. ${esc(s.title)} <small>${s.children.filter(k=>d.has(k.id)).length}/${s.children.length}</small></h2>
+      <ul>${s.children.map(k=>`<li class="lrow ${d.has(k.id)?'done':''}"><input type="checkbox" id="ck-${esc(k.id)}" data-done="${esc(k.id)}" ${d.has(k.id)?'checked':''} aria-label="Done: ${esc(k.title)}">
+        <span class="tt" data-open="${esc(k.id)}">${esc(k.title)}</span>${k.level!=='good'?`<span class="tag ${k.level}">${LEVELS[k.level]}</span>`:''}${(k.links||[]).length?`<span class="tag">${k.links.length} link${k.links.length>1?'s':''}</span>`:''}</li>`).join('')||'<li class="lrow"><span class="tt" style="color:var(--muted)">No subtopics yet</span></li>'}</ul></section>`).join('')}</div></div>`;
+    renderModal();return;
   }
 
-  main.innerHTML=`<section class="head">
-      <div style="min-width:0"><div class="eyebrow">Product roadmap</div><h1>${esc(r.name)}</h1>${r.summary?`<p>${esc(r.summary)}</p>`:''}</div>
-      <div class="stats">
-        <div class="stat"><b>${all.length}</b><span>Items</span></div>
-        <div class="stat"><b>${building}</b><span>In progress</span></div>
-        <div class="stat"><b>${pct}%</b><span>Shipped</span><div class="progress"><i style="width:${pct}%"></i></div></div>
-      </div></section>
-    ${themes.length?`<div class="filters"><span class="lbl">Theme</span><button class="chip" data-act="theme" data-t="" aria-pressed="${!S.theme}">All</button>${themes.map(t=>`<button class="chip" data-act="theme" data-t="${esc(t)}" aria-pressed="${S.theme===t}">${esc(t)}</button>`).join('')}</div>`:''}
-    ${body}`;
-  renderModal();
+  const L=layout(m);
+  main.innerHTML=`<div class="viewport" id="vp"><div class="stage" id="stage" style="width:${L.W}px;height:${L.H}px">
+    <svg width="${L.W}" height="${L.H}" aria-hidden="true">${L.wires.map(w=>`<path class="wire ${w.spine?'spine':''} ${w.kid&&d.has(w.kid)?'done':''}" d="${w.d}"/>`).join('')}</svg>
+    ${L.nodes.map(n=>nodeHTML(n,d)).join('')}</div>
+    <div class="zoom"><button data-act="zin" aria-label="Zoom in">+</button><button data-act="zout" aria-label="Zoom out">−</button><button data-act="fit" aria-label="Fit to screen">⤢</button></div>
+    <div class="hint">Drag to move · Ctrl + scroll to zoom · Click a topic for details</div></div>`;
+  S.layout=L;applyCam();renderModal();
+}
+function nodeHTML(n,d){
+  const st=`left:${n.x}px;top:${n.y}px;width:${n.w}px`;
+  if(n.type==='title')return `<div class="node title-node" style="left:${n.x}px;top:${n.y}px;max-width:${n.w}px"><span class="t">${esc(n.label)}</span></div>`;
+  if(n.type==='sec')return `<div class="node sec" role="button" tabindex="0" data-sec="${esc(n.s.id)}" style="${st};--c:var(--${n.s.color||'c1'})"><span class="t">${esc(n.s.title)}</span><span class="n">${n.s.children.filter(k=>d.has(k.id)).length}/${n.s.children.length}</span></div>`;
+  if(n.type==='add')return `<button class="node addnode" data-act="new-kid" data-s="${esc(n.s.id)}" style="${st}">+ Add subtopic</button>`;
+  if(n.type==='addsec')return `<button class="node addnode" data-act="new-sec" style="${st}">+ Add topic</button>`;
+  const k=n.k,dn=d.has(k.id);
+  return `<div class="node kid ${k.level||'good'} ${dn?'done':''}" role="button" tabindex="0" data-open="${esc(k.id)}" style="${st}" title="${esc(k.title)}"><span class="ck">${dn?'✓':''}</span><span class="t">${esc(k.title)}</span>${(k.links||[]).length?`<span class="lk">↗${k.links.length}</span>`:''}</div>`;
 }
 
-/* ---------- modals ---------- */
-function openModal(m){S.modal=m;renderModal();setTimeout(()=>{const f=$('#overlay [autofocus]');if(f)f.focus()},0)}
-function closeModal(){S.modal=null;renderModal()}
-function renderModal(){
-  const o=$('#overlay');const m=S.modal;
-  if(!m){o.innerHTML='';return}
-  if(o.dataset.key===m.key&&o.innerHTML&&!m.dirty)return; // keep typed values
-  o.dataset.key=m.key;m.dirty=false;
-  let h='';
-  if(m.type==='item'){
-    const it=m.item,ro=!editable();
-    const qs=upcomingQuarters();
-    h=`<form class="panel" id="itemForm"><h2>${ro?esc(it.title):(m.isNew?'New item':'Edit item')}</h2>
-      ${ro?`<p style="margin:0;color:var(--muted);white-space:pre-wrap">${esc(it.detail||'No details.')}</p>
-        <div class="meta"><span class="pill ${esc(it.status)}">${esc(STATUS[it.status])}</span><span class="q">${esc((LANES.find(l=>l.id===it.lane)||{}).name||'')}${it.quarter?' · '+esc(it.quarter):''}${it.theme?' · '+esc(it.theme):''}</span></div>
-        <div class="actions"><span class="sp"></span><button type="button" class="btn" data-act="close">Close</button></div>`:
-      `<div class="field"><label for="f-title">Title</label><input id="f-title" name="title" required maxlength="140" value="${esc(it.title)}" autofocus placeholder="What are you building?"></div>
-      <div class="field"><label for="f-detail">Details</label><textarea id="f-detail" name="detail" maxlength="2000" placeholder="Why it matters, what's included">${esc(it.detail)}</textarea></div>
-      <div class="row">
-        <div class="field"><label for="f-lane">Lane</label><select id="f-lane" name="lane">${LANES.map(l=>`<option value="${l.id}" ${it.lane===l.id?'selected':''}>${l.name}</option>`).join('')}</select></div>
-        <div class="field"><label for="f-status">Status</label><select id="f-status" name="status">${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${it.status===k?'selected':''}>${v}</option>`).join('')}</select></div>
-      </div>
-      <div class="row">
-        <div class="field"><label for="f-theme">Theme</label><input id="f-theme" name="theme" maxlength="40" list="themeList" value="${esc(it.theme)}" placeholder="e.g. Onboarding"><datalist id="themeList">${[...new Set(S.items.map(i=>i.theme).filter(Boolean))].map(t=>`<option value="${esc(t)}">`).join('')}</datalist></div>
-        <div class="field"><label for="f-quarter">Target quarter</label><input id="f-quarter" name="quarter" maxlength="20" list="qList" value="${esc(it.quarter)}" placeholder="${qs[0]}"><datalist id="qList">${qs.map(q=>`<option value="${q}">`).join('')}</datalist></div>
-      </div>
-      ${m.confirm?`<div class="confirm"><span>Delete “${esc(it.title)}”? This removes it for everyone.</span><button type="button" class="btn danger" data-act="del-item-yes">Delete</button><button type="button" class="btn" data-act="del-no">Keep</button></div>`:''}
-      <div class="actions">${m.isNew?'':`<button type="button" class="btn ghost" data-act="del-item" style="color:var(--danger)">Delete</button>`}<span class="sp"></span>
-        <button type="button" class="btn" data-act="close">Cancel</button><button type="submit" class="btn primary">${m.isNew?'Add item':'Save'}</button></div>`}
-    </form>`;
-  }else if(m.type==='roadmap'){
-    const r=m.roadmap;
-    h=`<form class="panel" id="rmForm"><h2>${m.isNew?'New roadmap':'Edit roadmap'}</h2>
-      <div class="field"><label for="r-name">Name</label><input id="r-name" name="name" required maxlength="80" value="${esc(r.name)}" autofocus placeholder="e.g. Mobile app 2027"></div>
-      <div class="field"><label for="r-sum">Summary</label><textarea id="r-sum" name="summary" maxlength="400" placeholder="One or two lines on what this roadmap covers">${esc(r.summary)}</textarea></div>
-      ${m.confirm?`<div class="confirm"><span>Delete “${esc(r.name)}” and its ${itemsOf(r.id).length} items? This can’t be undone.</span><button type="button" class="btn danger" data-act="del-rm-yes">Delete roadmap</button><button type="button" class="btn" data-act="del-no">Keep</button></div>`:''}
-      <div class="actions">${m.isNew?'':`<button type="button" class="btn ghost" data-act="del-rm" style="color:var(--danger)">Delete</button>`}<span class="sp"></span>
-        <button type="button" class="btn" data-act="close">Cancel</button><button type="submit" class="btn primary">${m.isNew?'Create roadmap':'Save'}</button></div></form>`;
-  }else if(m.type==='share'){
-    const r=cur();const md=r?toMarkdown(r):'';
+/* ---------- pan & zoom ---------- */
+function fitCam(){const vp=$('#vp');if(!vp||!S.layout)return;const vw=vp.clientWidth;const k=Math.min(1,Math.max(.3,(vw-24)/S.layout.W));S.cam={k,x:(vw-S.layout.W*k)/2,y:12}}
+function applyCam(){const st=$('#stage');if(!st)return;if(!S.cam)fitCam();st.style.transform=`translate(${S.cam.x}px,${S.cam.y}px) scale(${S.cam.k})`}
+function zoomAt(f,px,py){const c=S.cam;const k=Math.min(2,Math.max(.25,c.k*f));c.x=px-(px-c.x)*(k/c.k);c.y=py-(py-c.y)*(k/c.k);c.k=k;applyCam()}
+let pan=null;
+document.addEventListener('pointerdown',e=>{const vp=e.target.closest&&e.target.closest('#vp');if(!vp||e.target.closest('.node,.zoom'))return;
+  pan={x:e.clientX,y:e.clientY,cx:S.cam.x,cy:S.cam.y,id:e.pointerId};vp.classList.add('panning');try{vp.setPointerCapture(e.pointerId)}catch(err){}});
+document.addEventListener('pointermove',e=>{if(!pan||e.pointerId!==pan.id)return;S.cam.x=pan.cx+e.clientX-pan.x;S.cam.y=pan.cy+e.clientY-pan.y;applyCam()});
+document.addEventListener('pointerup',e=>{if(!pan)return;pan=null;const vp=$('#vp');if(vp)vp.classList.remove('panning')});
+document.addEventListener('wheel',e=>{const vp=e.target.closest&&e.target.closest('#vp');if(!vp||!S.cam)return;e.preventDefault();
+  const r=vp.getBoundingClientRect();
+  if(e.ctrlKey||e.metaKey)zoomAt(Math.exp(-e.deltaY*.01),e.clientX-r.left,e.clientY-r.top);
+  else{S.cam.x-=e.deltaX;S.cam.y-=e.deltaY;applyCam()}},{passive:false});
+window.addEventListener('resize',()=>{if(S.view==='map'){S.cam=null;applyCam()}});
+
+/* ---------- dialogs ---------- */
+function openModal(m){S.modal=m;m.key=m.key||Math.random().toString(36);renderModal(true);setTimeout(()=>{const f=$('#overlay [autofocus]');if(f)f.focus()},0)}
+function closeModal(){S.modal=null;renderModal(true)}
+function findKid(m,id){for(const s of m.sections){const k=s.children.find(x=>x.id===id);if(k)return{s,k}}return null}
+function renderModal(force){
+  const o=$('#overlay');const md=S.modal;
+  if(!md){o.innerHTML='';o.dataset.key='';return}
+  if(!force&&o.dataset.key===md.key&&o.innerHTML)return;
+  o.dataset.key=md.key;const m=cur();let h='';
+  const del=(what,act)=>md.confirm?`<div class="confirm"><span>Delete ${what}? This can’t be undone.</span><button type="button" class="btn danger" data-act="${act}">Delete</button><button type="button" class="btn" data-act="del-no">Keep</button></div>`:'';
+  if(md.type==='kid'){
+    const k=md.k;const dn=m&&doneSet(m.id).has(k.id);
+    if(!S.editing){
+      const links=(k.links||[]).filter(l=>safeUrl(l.url));
+      h=`<div class="panel"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="tag ${k.level}">${LEVELS[k.level||'good']}</span><span class="tag">${esc(md.s.title)}</span></div>
+        <h2>${esc(k.title)}</h2>${k.note?`<p class="lead">${esc(k.note)}</p>`:''}
+        ${links.length?`<div class="field"><span class="lbl">Resources</span><div class="links">${links.map(l=>`<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label||l.url)} ↗</a>`).join('')}</div></div>`:''}
+        <div class="actions"><button class="btn ${dn?'':'primary'}" data-act="toggle" data-id="${esc(k.id)}">${dn?'Mark as not done':'Mark as done'}</button><span class="sp"></span><button class="btn" data-act="close">Close</button></div></div>`;
+    }else{
+      const linkTxt=(k.links||[]).map(l=>(l.label?l.label+' | ':'')+l.url).join('\n');
+      h=`<form class="panel" id="kidForm"><h2>${md.isNew?'New subtopic':'Edit subtopic'}</h2>
+        <div class="field"><label for="k-title">Title</label><input id="k-title" name="title" required maxlength="120" value="${esc(k.title)}" autofocus></div>
+        <div class="field"><label for="k-level">Importance</label><select id="k-level" name="level">${Object.entries(LEVELS).map(([v,t])=>`<option value="${v}" ${k.level===v?'selected':''}>${t}</option>`).join('')}</select></div>
+        <div class="field"><label for="k-note">Notes</label><textarea id="k-note" name="note" maxlength="2000" placeholder="What to learn here, tips, what to skip">${esc(k.note)}</textarea></div>
+        <div class="field"><label for="k-links">Resources, one per line</label><textarea id="k-links" name="links" class="mono" style="min-height:80px" placeholder="Video lecture | https://…&#10;https://…">${esc(linkTxt)}</textarea></div>
+        ${del('this subtopic','del-kid-yes')}
+        <div class="actions">${md.isNew?'':`<button type="button" class="btn ghost" data-act="del-ask" style="color:var(--danger)">Delete</button>`}<span class="sp"></span>
+          <button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">${md.isNew?'Add':'Save'}</button></div></form>`;
+    }
+  }else if(md.type==='sec'){
+    const s=md.s;const idx=m.sections.findIndex(x=>x.id===s.id);
+    if(!S.editing){
+      const d=doneSet(m.id);
+      h=`<div class="panel"><h2>${esc(s.title)}</h2><p class="lead">${s.children.filter(k=>d.has(k.id)).length} of ${s.children.length} subtopics done.</p>
+        <div class="actions"><button class="btn" data-act="sec-all" data-id="${esc(s.id)}">Mark all as done</button><span class="sp"></span><button class="btn" data-act="close">Close</button></div></div>`;
+    }else{
+      h=`<form class="panel" id="secForm"><h2>${md.isNew?'New topic':'Edit topic'}</h2>
+        <div class="field"><label for="s-title">Title</label><input id="s-title" name="title" required maxlength="80" value="${esc(s.title)}" autofocus></div>
+        <div class="field"><span class="lbl">Colour</span><div class="colors">${COLORS.map(c=>`<label><input type="radio" name="color" value="${c}" ${s.color===c?'checked':''} aria-label="Colour ${c.slice(1)}"><span style="--c:var(--${c})"></span></label>`).join('')}</div></div>
+        ${!md.isNew?`<div class="field"><span class="lbl">Position</span><div style="display:flex;gap:8px"><button type="button" class="btn" data-act="sec-move" data-dir="-1" ${idx<=0?'disabled':''}>Move up</button><button type="button" class="btn" data-act="sec-move" data-dir="1" ${idx>=m.sections.length-1?'disabled':''}>Move down</button></div></div>`:''}
+        ${del(`“${esc(s.title)}” and its ${s.children.length} subtopics`,'del-sec-yes')}
+        <div class="actions">${md.isNew?'':`<button type="button" class="btn ghost" data-act="del-ask" style="color:var(--danger)">Delete</button>`}<span class="sp"></span>
+          <button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">${md.isNew?'Add':'Save'}</button></div></form>`;
+    }
+  }else if(md.type==='map'){
+    const r=md.map;
+    h=`<form class="panel" id="mapForm"><h2>${md.isNew?'New roadmap':'Edit roadmap'}</h2>
+      <div class="field"><label for="m-name">Name</label><input id="m-name" name="name" required maxlength="80" value="${esc(r.name)}" autofocus placeholder="e.g. DBMS Roadmap"></div>
+      <div class="field"><label for="m-sum">Summary</label><textarea id="m-sum" name="summary" maxlength="400" placeholder="Who it's for and what it covers">${esc(r.summary)}</textarea></div>
+      ${del(`“${esc(r.name)}”`,'del-map-yes')}
+      <div class="actions">${md.isNew?`<button type="button" class="btn ghost" data-act="import">Paste an outline instead</button>`:`<button type="button" class="btn ghost" data-act="del-ask" style="color:var(--danger)">Delete roadmap</button>`}<span class="sp"></span>
+        <button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">${md.isNew?'Create':'Save'}</button></div></form>`;
+  }else if(md.type==='import'){
+    h=`<form class="panel" id="impForm"><h2>Paste an outline</h2>
+      <p class="lead">Put each topic on its own line, with its subtopics indented below it. End a subtopic with ! for “must know” or ? for “optional”. Add a link after a | sign.</p>
+      <textarea id="imp" name="text" class="mono" style="min-height:260px" autofocus>${esc(md.text||'')}</textarea>
+      <div class="actions"><span class="sp"></span><button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary">Create roadmap</button></div></form>`;
+  }else if(md.type==='share'){
     h=`<div class="panel"><h2>Share this roadmap</h2>
-      ${S.mode==='local'?`<p style="margin:0;color:var(--muted)">This copy saves to your browser only. Open the published page on claude.ai while signed in to share a live roadmap.</p>`:`
-      <div class="share-step"><h3>1. Invite people</h3><p>Use the <b>Share</b> menu at the top of this page. Viewers can read and follow along. Give Contributor access to people who should edit and vote.</p></div>`}
-      ${r?`<div class="share-step"><h3>${S.mode==='local'?'':'2. '}Link to this roadmap</h3><p>Add this to the end of the page link so it opens on “${esc(r.name)}”.</p>
-        <div class="copyrow"><input id="anchor" readonly value="#${esc(r.id)}"><button class="btn" data-act="copy" data-src="anchor">Copy</button></div></div>
-      <div class="share-step"><h3>${S.mode==='local'?'':'3. '}Post it anywhere</h3><p>Paste this Markdown into a doc, README, Slack or Notion.</p>
-        <textarea id="mdOut" class="md" readonly>${esc(md)}</textarea>
-        <div class="actions"><button class="btn" data-act="copy" data-src="mdOut">Copy Markdown</button>${S.downloads?`<button class="btn" data-act="download">Download .md</button>`:''}<span class="sp"></span><button class="btn primary" data-act="close">Done</button></div></div>`:`<div class="actions"><span class="sp"></span><button class="btn primary" data-act="close">Done</button></div>`}
-    </div>`;
+      ${S.mode==='db'?`<div class="share-step"><h3>1. Invite people</h3><p>Use the <b>Share</b> menu at the top of this page. Viewers can follow the roadmap and tick off their own progress. Give Contributor access to people who should edit it.</p></div>`:`<p class="lead">This copy saves to your browser only. Open the published page on claude.ai while signed in to share a live roadmap.</p>`}
+      <div class="share-step"><h3>${S.mode==='db'?'2. ':''}Link straight to this roadmap</h3><p>Add this to the end of the page link.</p>
+        <div class="copyrow"><input id="anchor" readonly value="#${esc(m.id)}"><button class="btn" data-act="copy" data-src="anchor">Copy</button></div></div>
+      <div class="share-step"><h3>${S.mode==='db'?'3. ':''}Post it as a checklist</h3><p>Markdown with your progress ticked, for a README, Notion or Discord.</p>
+        <textarea id="mdOut" class="mono" readonly>${esc(toMarkdown(m))}</textarea>
+        <div class="actions"><button class="btn" data-act="copy" data-src="mdOut">Copy Markdown</button>${S.downloads?`<button class="btn" data-act="download">Download .md</button>`:''}<button class="btn" data-act="copy-outline">Copy outline</button><span class="sp"></span><button class="btn primary" data-act="close">Done</button></div></div></div>`;
   }
   o.innerHTML=`<div class="ov" data-act="backdrop" role="dialog" aria-modal="true">${h}</div>`;
 }
-
-function toMarkdown(r){
-  const all=itemsOf(r.id);const out=[`# ${r.name}`];if(r.summary)out.push('',r.summary);
-  LANES.forEach(l=>{const li=all.filter(i=>(i.lane||'later')===l.id).sort((a,b)=>(a.order||0)-(b.order||0));
-    out.push('',`## ${l.name}`);if(!li.length)out.push('_Nothing yet_');
-    li.forEach(i=>{const box=i.status==='shipped'?'[x]':'[ ]';const bits=[STATUS[i.status],i.quarter,i.theme].filter(Boolean).join(' · ');
-      out.push(`- ${box} **${i.title}**${bits?` (${bits})`:''}${i.detail?` — ${i.detail}`:''}`)})});
-  return out.join('\n');
-}
-
 let toastT;function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2600)}
+const clone=m=>JSON.parse(JSON.stringify(m));
+function formVals(id){const f=document.getElementById(id);const o={};if(f)for(const[k,v]of new FormData(f).entries())o[k]=v;return o}
 
 /* ---------- actions ---------- */
-function nextOrder(filterFn){const l=S.items.filter(filterFn);return l.length?Math.max(...l.map(i=>i.order||0))+1:1}
-
+function openNode(el){
+  const m=cur();if(!m)return;
+  if(el.dataset.open){const r=findKid(m,el.dataset.open);if(r)openModal({type:'kid',k:clone(r.k),s:r.s,isNew:false})}
+  else if(el.dataset.sec){const s=m.sections.find(x=>x.id===el.dataset.sec);if(s)openModal({type:'sec',s:clone(s),isNew:false})}
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&S.modal){closeModal();return}
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('.node[role="button"]')){e.preventDefault();openNode(e.target)}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='rm')setCurrent(e.target.value);
+  if(e.target.dataset&&e.target.dataset.done)toggleDone(e.target.dataset.done);
+});
 document.addEventListener('click',async e=>{
   const el=e.target.closest('[data-act]');
-  const card=e.target.closest('.card');
-  if(!el&&card){const it=S.items.find(i=>i.id===card.dataset.id);if(it)openModal({type:'item',key:'i'+it.id,item:{...it},isNew:false});return}
-  if(!el)return;
-  const a=el.dataset.act;
+  if(!el){const n=e.target.closest('[data-open],[data-sec]');if(n&&!n.matches('input'))openNode(n);return}
+  const a=el.dataset.act;const m=cur();
   if(a==='backdrop'){if(e.target===el)closeModal();return}
   if(a==='close'){closeModal();return}
-  if(a==='view'){S.view=el.dataset.v;ls('waypoint-view',S.view);render();return}
-  if(a==='present'){S.present=!S.present;render();return}
-  if(a==='theme'){S.theme=el.dataset.t||null;render();return}
-  if(a==='share'){openModal({type:'share',key:'share'+Date.now()});return}
-  if(a==='new-roadmap'){openModal({type:'roadmap',key:'nr'+Date.now(),roadmap:{name:'',summary:''},isNew:true});return}
-  if(a==='edit-roadmap'){const r=cur();if(r)openModal({type:'roadmap',key:'r'+r.id,roadmap:{...r},isNew:false});return}
-  if(a==='new-item'){
-    const r=cur();if(!r)return;
-    const lane=el.dataset.lane||(S.view==='board'?'later':'next');
-    const quarter=el.dataset.quarter!==undefined?el.dataset.quarter:'';
-    openModal({type:'item',key:'ni'+Date.now(),isNew:true,item:{id:newId('i'),roadmapId:r.id,title:'',detail:'',lane,status:'planned',theme:S.theme||'',quarter}});return}
-  if(a==='del-item'||a==='del-rm'){syncForm();S.modal.confirm=true;S.modal.dirty=true;renderModal();return}
-  if(a==='del-no'){syncForm();S.modal.confirm=false;S.modal.dirty=true;renderModal();return}
-  if(a==='del-item-yes'){const id=S.modal.item.id;closeModal();await del('items',id);toast('Item deleted');return}
-  if(a==='del-rm-yes'){
-    const id=S.modal.roadmap.id;closeModal();
-    for(const it of itemsOf(id))await del('items',it.id);
-    await del('roadmaps',id);S.current=null;pickCurrent();render();toast('Roadmap deleted');return}
-  if(a==='vote'){e.stopPropagation();vote(el.dataset.id);return}
-  if(a==='copy'){
-    const src=document.getElementById(el.dataset.src);
-    try{await navigator.clipboard.writeText(src.value);toast('Copied')}catch(err){src.focus();src.select();toast('Press Ctrl+C or ⌘C to copy the selected text')}
+  if(a==='view'){S.view=el.dataset.v;ls('waypoint-view',S.view);S.cam=null;render();return}
+  if(a==='edit'){S.editing=!S.editing;render();return}
+  if(a==='zin'||a==='zout'){const vp=$('#vp');zoomAt(a==='zin'?1.2:1/1.2,vp.clientWidth/2,vp.clientHeight/2);return}
+  if(a==='fit'){S.cam=null;applyCam();return}
+  if(a==='share'){if(m)openModal({type:'share'});else toast('Create a roadmap first.');return}
+  if(a==='new-map'){openModal({type:'map',map:{name:'',summary:''},isNew:true});return}
+  if(a==='edit-map'){openModal({type:'map',map:clone(m),isNew:false});return}
+  if(a==='import'){openModal({type:'import',text:SAMPLE.replace('# Example: Learn Git','# My roadmap').replace(/^> .*\n/m,'')});return}
+  if(a==='new-sec'){openModal({type:'sec',s:{id:newId('s'),title:'',color:COLORS[m.sections.length%COLORS.length],children:[]},isNew:true});return}
+  if(a==='new-kid'){const s=m.sections.find(x=>x.id===el.dataset.s);openModal({type:'kid',s,k:{id:newId('k'),title:'',level:'good',note:'',links:[]},isNew:true});return}
+  if(a==='toggle'){await toggleDone(el.dataset.id);closeModal();return}
+  if(a==='sec-all'){const s=m.sections.find(x=>x.id===el.dataset.id);const d=doneSet(m.id);s.children.forEach(k=>d.add(k.id));S.done[m.id]=[...d];closeModal();
+    if(S.mode==='db'){if(S.uid)try{await S.db.collection('data/users/'+S.uid).doc('progress').set({done:S.done})}catch(err){toast('Your progress did not save. Try again.')}}else saveLocal();render();return}
+  if(a==='del-ask'||a==='del-no'){keepForm();S.modal.confirm=a==='del-ask';renderModal(true);return}
+  if(a==='del-kid-yes'){const mm=clone(m);mm.sections.forEach(s=>s.children=s.children.filter(k=>k.id!==S.modal.k.id));closeModal();await saveMap(mm);toast('Subtopic deleted');return}
+  if(a==='del-sec-yes'){const mm=clone(m);mm.sections=mm.sections.filter(s=>s.id!==S.modal.s.id);closeModal();await saveMap(mm);toast('Topic deleted');return}
+  if(a==='del-map-yes'){const id=S.modal.map.id;closeModal();await deleteMap(id);toast('Roadmap deleted');return}
+  if(a==='sec-move'){const mm=clone(m);const i=mm.sections.findIndex(s=>s.id===S.modal.s.id);const j=i+(+el.dataset.dir);if(j<0||j>=mm.sections.length)return;
+    [mm.sections[i],mm.sections[j]]=[mm.sections[j],mm.sections[i]];keepForm();await saveMap(mm);renderModal(true);return}
+  if(a==='copy'||a==='copy-outline'){
+    let src=a==='copy'?document.getElementById(el.dataset.src):null;const text=src?src.value:toOutline(m);
+    try{await navigator.clipboard.writeText(text);toast('Copied')}catch(err){if(src){src.focus();src.select();toast('Press Ctrl+C or ⌘C to copy the selected text')}else{const t=$('#mdOut');t.value=text;t.focus();t.select();toast('Outline selected. Press Ctrl+C or ⌘C to copy.')}}
     return}
   if(a==='download'){
-    const r=cur();if(!r||!S.downloads)return;
-    try{await S.downloads.save({filename:(r.name||'roadmap').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-').toLowerCase()+'.md',data:toMarkdown(r)})}catch(err){if(err&&err.code==='unavailable'){S.downloads=null;S.modal.dirty=true;renderModal()}}
+    try{await S.downloads.save({filename:(m.name||'roadmap').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-').toLowerCase()+'.md',data:toMarkdown(m)})}catch(err){if(err&&err.code==='unavailable'){S.downloads=null;renderModal(true)}}
     return}
 });
-document.addEventListener('change',e=>{if(e.target.id==='rm')setCurrent(e.target.value)});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.modal)closeModal()});
-
-function syncForm(){ // keep typed values across re-render of the modal
-  const m=S.modal;if(!m)return;const f=$('#itemForm')||$('#rmForm');if(!f)return;
-  const fd=new FormData(f);const tgt=m.type==='item'?m.item:m.roadmap;for(const[k,v]of fd.entries())tgt[k]=v;
+function keepForm(){ // carry typed values across a dialog re-render
+  const md=S.modal;if(!md)return;
+  if(md.type==='kid'&&$('#kidForm')){const v=formVals('kidForm');Object.assign(md.k,{title:v.title,level:v.level,note:v.note,links:parseLinks(v.links)})}
+  if(md.type==='sec'&&$('#secForm')){const v=formVals('secForm');md.s.title=v.title;md.s.color=v.color||md.s.color}
+  if(md.type==='map'&&$('#mapForm')){const v=formVals('mapForm');md.map.name=v.name;md.map.summary=v.summary}
 }
+function parseLinks(t){return(t||'').split(/\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const i=l.lastIndexOf('|');const url=safeUrl(i>=0?l.slice(i+1):l);return url?{label:i>=0?l.slice(0,i).trim():'',url}:null}).filter(Boolean).slice(0,10)}
 
 document.addEventListener('submit',async e=>{
-  e.preventDefault();const m=S.modal;if(!m)return;syncForm();
-  if(m.type==='item'){
-    const it=m.item;it.title=(it.title||'').trim();if(!it.title){toast('Give the item a title.');return}
-    const prev=S.items.find(i=>i.id===it.id);
-    if(!prev||prev.lane!==it.lane)it.order=nextOrder(i=>i.roadmapId===it.roadmapId&&i.lane===it.lane);
-    it.updatedAt=Date.now();it.theme=(it.theme||'').trim();it.quarter=(it.quarter||'').trim().replace(/^q/,'Q');
-    closeModal();await put('items',it.id,strip(it));toast(m.isNew?'Item added':'Saved');
-  }else if(m.type==='roadmap'){
-    const r=m.roadmap;r.name=(r.name||'').trim();if(!r.name){toast('Give the roadmap a name.');return}
-    if(m.isNew){r.id=newId('r');r.createdAt=Date.now()}
-    closeModal();await put('roadmaps',r.id,strip(r));if(m.isNew)setCurrent(r.id);toast(m.isNew?'Roadmap created':'Saved');
+  e.preventDefault();const md=S.modal;if(!md)return;keepForm();const m=cur();
+  if(md.type==='kid'){
+    const k=md.k;k.title=(k.title||'').trim();if(!k.title){toast('Give the subtopic a title.');return}
+    const mm=clone(m);const s=mm.sections.find(x=>x.id===md.s.id);if(!s)return;
+    const i=s.children.findIndex(x=>x.id===k.id);if(i<0)s.children.push(k);else s.children[i]=k;
+    closeModal();await saveMap(mm);
+  }else if(md.type==='sec'){
+    const s=md.s;s.title=(s.title||'').trim();if(!s.title){toast('Give the topic a title.');return}
+    const mm=clone(m);const i=mm.sections.findIndex(x=>x.id===s.id);
+    if(i<0)mm.sections.push(s);else mm.sections[i]={...mm.sections[i],title:s.title,color:s.color};
+    closeModal();await saveMap(mm);
+  }else if(md.type==='map'){
+    const r=md.map;r.name=(r.name||'').trim();if(!r.name){toast('Give the roadmap a name.');return}
+    if(md.isNew){const nm={id:newId('m'),createdAt:Date.now(),name:r.name,summary:(r.summary||'').trim(),sections:[]};closeModal();S.editing=true;await saveMap(nm);setCurrent(nm.id);toast('Roadmap created. Add your first topic.')}
+    else{const mm=clone(m);mm.name=r.name;mm.summary=(r.summary||'').trim();closeModal();await saveMap(mm)}
+  }else if(md.type==='import'){
+    const v=formVals('impForm');const p=parseOutline(v.text||'');if(!p.sections.length){toast('Add at least one topic line.');return}
+    const nm={id:newId('m'),createdAt:Date.now(),...p};closeModal();await saveMap(nm);setCurrent(nm.id);toast('Roadmap created');
   }
 });
 
-async function vote(id){
-  const had=S.myVotes.includes(id);const next=had?S.myVotes.filter(x=>x!==id):[...S.myVotes,id];
-  if(S.mode==='local'){S.myVotes=next;countVotesLocal();saveLocal();render();return}
-  if(!S.uid||!S.canWrite)return;
-  S.myVotes=next;S.voteCounts[id]=Math.max(0,(S.voteCounts[id]||0)+(had?-1:1));render();
-  try{await S.db.doc('votes/'+S.uid).set({items:next})}catch(e){onWriteErr(e)}
-}
-
-/* drag & drop between lanes / quarters */
-let dragId=null;
-document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('.card');if(!c||!editable())return;dragId=c.dataset.id;c.classList.add('dragging');try{e.dataTransfer.setData('text/plain',dragId);e.dataTransfer.effectAllowed='move'}catch(err){}});
-document.addEventListener('dragend',e=>{document.querySelectorAll('.dragging,.over').forEach(x=>x.classList.remove('dragging','over'));dragId=null});
-document.addEventListener('dragover',e=>{const l=e.target.closest&&e.target.closest('.lane');if(!l||!dragId)return;e.preventDefault();document.querySelectorAll('.lane.over').forEach(x=>x!==l&&x.classList.remove('over'));l.classList.add('over')});
-document.addEventListener('drop',async e=>{
-  const l=e.target.closest&&e.target.closest('.lane');if(!l||!dragId)return;e.preventDefault();
-  const it=S.items.find(i=>i.id===dragId);dragId=null;l.classList.remove('over');if(!it)return;
-  const upd={...it};
-  if(l.dataset.lane!==undefined){if(upd.lane===l.dataset.lane)return;upd.lane=l.dataset.lane;upd.order=nextOrder(i=>i.roadmapId===it.roadmapId&&i.lane===upd.lane)}
-  else if(l.dataset.quarter!==undefined){if((upd.quarter||'')===l.dataset.quarter)return;upd.quarter=l.dataset.quarter}
-  upd.updatedAt=Date.now();await put('items',upd.id,strip(upd));
-});
-
-S.view=ls('waypoint-view')==='timeline'?'timeline':'board';
+S.view=ls('waypoint-view')==='list'?'list':'map';
 boot();
 </script>
